@@ -614,8 +614,8 @@ export default function HomePage() {
         
         <main className="flex flex-col gap-0">
           <HeroSection />
-          <CenteredNavigation />
           <CodeTerminal />
+          <CenteredNavigation />
           <ProjectsSection />
           <AboutSection />
           <ContactSection />
