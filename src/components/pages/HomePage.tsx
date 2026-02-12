@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Image } from '@/components/ui/image';
+import CenteredNavigation from '@/components/CenteredNavigation';
 
 // --- CANONICAL DATA SOURCES ---
 // Derived from entities/index.ts to ensure strict adherence to data structures.
@@ -613,6 +614,7 @@ export default function HomePage() {
         
         <main className="flex flex-col gap-0">
           <HeroSection />
+          <CenteredNavigation />
           <CodeTerminal />
           <ProjectsSection />
           <AboutSection />
