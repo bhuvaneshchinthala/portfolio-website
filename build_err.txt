@@ -1,0 +1,33 @@
+npm warn using --force Recommended protections disabled.
+
+> visionary-portfolio@1.0.0 build
+> astro build
+
+10:11:48 [content] Syncing content
+10:11:48 [content] Synced content
+10:11:48 [types] Generated 256ms
+10:11:48 [build] output: "static"
+10:11:48 [build] mode: "static"
+10:11:48 [build] directory: /Users/chinthalasathwik/Desktop/SEM 6 PROJECT/NEW/dist/
+10:11:48 [build] Collecting build info...
+10:11:48 [build] ✓ Completed in 362ms.
+10:11:48 [build] Building static entrypoints...
+10:11:49 [WARN] [vite] 
+/grid-pattern.svg referenced in /grid-pattern.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+10:11:53 [vite] ✓ built in 5.02s
+10:11:53 [build] ✓ Completed in 5.09s.
+
+ building client (vite) 
+10:11:53 [vite] transforming...
+10:11:58 [vite] ✓ 2159 modules transformed.
+10:11:58 [ERROR] [vite] ✗ Build failed in 5.39s
+[vite]: Rollup failed to resolve import "@/integrations" from "/Users/chinthalasathwik/Desktop/SEM 6 PROJECT/NEW/src/components/ProjectsSection.tsx".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+  Stack trace:
+    at viteLog (file:///Users/chinthalasathwik/Desktop/SEM%206%20PROJECT/NEW/node_modules/astro/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:46374:15)
+    at onwarn (file:///Users/chinthalasathwik/Desktop/SEM%206%20PROJECT/NEW/node_modules/@vitejs/plugin-react/dist/index.js:90:7)
+    at onRollupLog (file:///Users/chinthalasathwik/Desktop/SEM%206%20PROJECT/NEW/node_modules/astro/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:46422:5)
+    at file:///Users/chinthalasathwik/Desktop/SEM%206%20PROJECT/NEW/node_modules/rollup/dist/es/shared/node-entry.js:20958:32
+    at ModuleLoader.handleInvalidResolvedId (file:///Users/chinthalasathwik/Desktop/SEM%206%20PROJECT/NEW/node_modules/rollup/dist/es/shared/node-entry.js:21689:26)

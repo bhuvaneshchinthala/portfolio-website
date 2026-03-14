@@ -1,39 +1,521 @@
-@import './fonts.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "./fonts.css";
 
 /* Smooth scrolling */
+:root {
+  --ferrari-red: #ff2800;
+  --ferrari-black: #0A0A0A;
+  --ferrari-carbon: #1a1a1a;
+  --ferrari-gold: #D4AF37;
+  --ferrari-yellow: #FFD700;
+
+  /* Luxury Theme */
+  --luxury-black: #0A0A0A;
+  --luxury-red: #FF4C00;
+  --luxury-white: #FFFFFF;
+  --luxury-gray: #B3B3B3;
+  --luxury-card: #1A1A1A;
+
+  /* Pagani Theme */
+  --pagani-black: #1a1a1a;
+  --pagani-gold: #D4AF37;
+  --bright-gold: #FFD700;
+  --carbon-gray: #2a2a2a;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 html {
-  scroll-behavior: smooth;
+  background-color: #000000;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #020202;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #52525b;
-  border-radius: 4px;
+  background: #333;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: #ff2800;
 }
 
-/* Prevent horizontal scroll */
+/* Prevent horizontal scroll and set main background */
 body {
   overflow-x: hidden;
+  background-color: #000000;
+  background-image: radial-gradient(circle at 50% 0%, #111111 0%, #000000 70%);
+  color: #EDEDED;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.font-rajdhani {
+  font-family: 'Rajdhani', sans-serif;
+}
+
+
+/* Noise texture overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
 }
 
 /* Selection color */
 ::selection {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(220, 0, 0, 0.3);
+  /* Ferrari Red Selection */
   color: #ffffff;
+}
+
+/* Liquid Chrome Typography */
+.liquid-chrome {
+  background: linear-gradient(to bottom,
+      #ffffff 20%,
+      #e0e0e0 40%,
+      #a0a0a0 50%,
+      #ffffff 55%,
+      #606060 60%,
+      #e0e0e0 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  background-size: 100% 200%;
+  animation: liquid-shine 4s ease-in-out infinite;
+}
+
+@keyframes liquid-shine {
+  0% {
+    background-position: 0% 100%;
+  }
+
+  50% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.2);
+}
+
+/* Liquid Chrome Typography */
+.liquid-chrome {
+  background: linear-gradient(to bottom,
+      #ffffff 0%,
+      #e0e0e0 40%,
+      #a0a0a0 50%,
+      #ffffff 55%,
+      #606060 60%,
+      #e0e0e0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+  background-size: 100% 200%;
+  animation: liquid-shine 4s linear infinite;
+}
+
+@keyframes liquid-shine {
+  0% {
+    background-position: 0% 100%;
+  }
+
+  100% {
+    background-position: 0% -100%;
+  }
+}
+
+/* Infinite Scroll Animation */
+@keyframes infinite-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll 25s linear infinite;
+}
+
+/* Hide Development Overlays (User requested to remove "veo" watermark) */
+/* Leva / Controls */
+#leva__root,
+.leva-c-h,
+.leva-panel {
+  display: none !important;
+}
+
+/* Vercel Toolbar */
+vercel-live-feedback,
+#vercel-toolbar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Vite Error Overlay (if stuck) */
+vite-error-overlay {
+  display: none !important;
+}
+
+/* Any element with class *veo* just in case */
+[class*="veo"] {
+  display: none !important;
+}
+
+/* Gradient Animation */
+@keyframes gradient-x {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* ===== HERO UNIQUE EFFECTS ===== */
+
+/* Glitch Text Effect */
+@keyframes glitch-text {
+
+  0%,
+  100% {
+    text-shadow: 2px 0 #ff2800, -2px 0 #00f0ff;
+    transform: translate(0);
+  }
+
+  20% {
+    text-shadow: -3px 0 #ff2800, 3px 0 #00f0ff;
+    transform: translate(-2px, 1px);
+  }
+
+  40% {
+    text-shadow: 3px 0 #ff2800, -3px 0 #00f0ff;
+    transform: translate(2px, -1px);
+  }
+
+  60% {
+    text-shadow: -2px 0 #ff2800, 2px 0 #00f0ff;
+    transform: translate(1px, 2px);
+  }
+
+  80% {
+    text-shadow: 2px 0 #ff2800, -2px 0 #00f0ff;
+    transform: translate(-1px, -1px);
+  }
+}
+
+.animate-glitch {
+  animation: glitch-text 3s ease-in-out infinite;
+}
+
+/* Shimmer Sweep */
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer-sweep {
+  background-size: 200% 100%;
+  animation: shimmer-sweep 4s ease-in-out infinite;
+}
+
+/* Typewriter Cursor Blink */
+@keyframes blink-cursor {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink-cursor 1s step-end infinite;
+}
+
+/* Scan Line */
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.animate-scan-line {
+  animation: scan-line 4s linear infinite;
+}
+
+/* Corner Bracket Pulse */
+@keyframes bracket-pulse {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-bracket-pulse {
+  animation: bracket-pulse 3s ease-in-out infinite;
+}
+
+/* Counter Gradient */
+@keyframes counter-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 40, 0, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(255, 40, 0, 0.25);
+  }
+}
+
+.animate-counter-glow {
+  animation: counter-glow 3s ease-in-out infinite;
+}
+
+/* Typing effect for code lines */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+/* Slow Pulse */
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+/* Font Syne */
+.font-syne {
+  font-family: 'Syne', sans-serif;
+}
+
+/* ===== HERO CTA BUTTONS ===== */
+
+.btn-hero-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.75rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #ff2800 0%, #cc1a00 100%);
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(255, 40, 0, 0.32), 0 1px 4px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.25s ease, background 0.25s ease;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-hero-primary:hover {
+  background: linear-gradient(135deg, #ff4010 0%, #e02000 100%);
+  box-shadow: 0 6px 32px rgba(255, 40, 0, 0.48), 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.btn-hero-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.75rem;
+  border-radius: 9999px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.60);
+  font-size: 0.8125rem;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-hero-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.50);
+  color: rgba(255, 255, 255, 0.90);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.06);
+}
+
+/* Stat card red glow pulse */
+@keyframes stat-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 16px rgba(255, 40, 0, 0.10);
+  }
+
+  50% {
+    box-shadow: 0 0 32px rgba(255, 40, 0, 0.22);
+  }
+}
+
+.animate-stat-glow {
+  animation: stat-glow 3s ease-in-out infinite;
+}
+
+/* Slow spin for decorative rings */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 25s linear infinite;
+}
+
+/* Ticker strip */
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker 30s linear infinite;
+}
+
+/* Card scan line for Bento project cards */
+@keyframes card-scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+.animate-card-scan {
+  animation: card-scan-line 6s linear infinite;
+}
+
+/* Scroll indicator bounce for Valentin Cheval section */
+@keyframes scroll-indicator {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.animate-scroll-indicator {
+  animation: scroll-indicator 2s ease-in-out infinite;
 }

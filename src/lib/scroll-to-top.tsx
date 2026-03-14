@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useLenis } from 'lenis/react';
 
 // Component to handle automatic scroll management
 export function ScrollToTop() {
   const location = useLocation();
   const prevLocationRef = useRef<string | null>(null);
+
+  const lenis = useLenis();
 
   useEffect(() => {
     // Check if this is the same page (same pathname)
@@ -12,26 +15,31 @@ export function ScrollToTop() {
 
     // Check if the URL has a hash
     if (location.hash) {
-      // URL with hash: Wait 100ms and then call scrollIntoView() to the target element
       setTimeout(() => {
-        const element = document.getElementById(location.hash.slice(1));
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+        if (lenis) {
+          lenis.scrollTo(location.hash, { offset: 0 });
+        } else {
+          const element = document.getElementById(location.hash.slice(1));
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       }, 100);
     } else {
-      // URL without hash: Scroll to the top of the page
-      // Use smooth animation if same page, auto if different page
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: isSamePage ? 'smooth' : 'auto'
-      });
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: !isSamePage });
+      } else {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: isSamePage ? 'smooth' : 'instant' as any
+        });
+      }
     }
 
     // Update the previous location reference
     prevLocationRef.current = location.pathname;
-  }, [location]);
+  }, [location, lenis]);
 
   return null;
 }

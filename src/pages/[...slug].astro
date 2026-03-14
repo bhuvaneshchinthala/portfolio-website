@@ -1,28 +1,31 @@
 ---
-import { SEO } from '@wix/seo/components';
-import { loadSEOTagsServiceConfig } from '@wix/seo/services';
 import { Head } from "@/components/Head";
 import AppRouter from "@/components/Router";
-import "@wix/wix-vibe-plugins/plugins-vars.css";
-import "@wix/wix-vibe-plugins/plugins-theme.css";
+import GlobalBackground from "@/components/GlobalBackground";
+import MagneticCursor from "@/components/ui/MagneticCursor";
+import LenisWrapper from "@/components/LenisWrapper";
 import "@/styles/global.css";
 
-const seoTagsServiceConfig = await loadSEOTagsServiceConfig({
-  pageUrl: Astro.url.href,
-  itemData: {
-    pageName: 'Home',
-  },
-});
+export function getStaticPaths() {
+  return [
+    { params: { slug: undefined } },
+    { params: { slug: 'about-me' } },
+    { params: { slug: 'pdf-viewer' } },
+  ];
+}
 ---
 
 <html lang="en" class="w-full h-full">
   <head>
     <Head />
-    <SEO.Tags seoTagsServiceConfig={seoTagsServiceConfig} slot="seo-tags" />
   </head>
-  <body class="w-full h-full">
-    <div id="root" class="w-full h-full">
-      <AppRouter client:only="react" />
+  <body class="w-full h-full antialiased">
+    <div id="root" class="w-full h-full relative cursor-none">
+      <LenisWrapper client:only="react">
+        <MagneticCursor client:only="react" />
+        {/* <GlobalBackground client:only="react" /> */}
+        <AppRouter client:only="react" />
+      </LenisWrapper>
     </div>
   </body>
 </html>

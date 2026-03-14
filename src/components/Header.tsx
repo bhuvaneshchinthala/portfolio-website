@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { useTransitionStore } from '@/lib/store';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -13,11 +15,10 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const { startTransition } = useTransitionStore();
+
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    startTransition(id);
   };
 
   return (
@@ -25,73 +26,52 @@ export default function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-deep-black/80 backdrop-blur-xl border-b border-overlay' : 'bg-transparent'
-      }`}
+      className="fixed top-6 left-0 right-0 z-[90] flex justify-center px-4"
     >
-      <nav className="max-w-[120rem] mx-auto px-8 py-6 flex items-center justify-between">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="font-heading text-2xl font-bold tracking-tight"
-        >
-          <span className="bg-gradient-to-r from-foreground to-light-gray bg-clip-text text-transparent">
-            NEBULA
-          </span>
-        </motion.div>
+      <nav className="bg-neutral-900/80 backdrop-blur-md border border-red-500/10 rounded-full px-6 py-3 flex items-center gap-8 shadow-lg shadow-red-500/5">
 
-        <motion.ul
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center gap-8 font-paragraph text-sm"
-        >
-          <li>
-            <button
-              onClick={() => scrollToSection('hero')}
-              className="text-secondary hover:text-foreground transition-colors duration-300 relative group"
-            >
-              Home
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-foreground group-hover:w-full transition-all duration-300" />
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection('terminal')}
-              className="text-secondary hover:text-foreground transition-colors duration-300 relative group"
-            >
-              Code
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-foreground group-hover:w-full transition-all duration-300" />
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection('projects')}
-              className="text-secondary hover:text-foreground transition-colors duration-300 relative group"
-            >
-              Projects
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-foreground group-hover:w-full transition-all duration-300" />
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection('about')}
-              className="text-secondary hover:text-foreground transition-colors duration-300 relative group"
-            >
-              About
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-foreground group-hover:w-full transition-all duration-300" />
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection('contact')}
-              className="px-6 py-2 bg-foreground text-deep-black rounded-full font-medium hover:bg-light-gray transition-all duration-300 hover:scale-105"
-            >
-              Contact
-            </button>
-          </li>
-        </motion.ul>
+        <ul className="flex items-center gap-6 font-paragraph text-sm text-gray-200 hidden md:flex">
+            <li>
+              <button
+                className="hover:text-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.5)] transition-all duration-300 px-3 py-1 rounded-full hover:bg-white/5"
+                onClick={() => scrollToSection('hero')}
+              >
+                Home
+              </button>
+            </li>
+            <li>
+              <Link
+                to="/about-me"
+                className="hover:text-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.5)] transition-all duration-300 px-3 py-1 rounded-full hover:bg-white/5"
+              >
+                About Me
+              </Link>
+            </li>
+            {[
+              { label: 'Projects', id: 'projects' },
+              { label: 'Terminal', id: 'terminal' },
+              { label: 'Contact', id: 'contact' },
+            ].map((item) => (
+              <li key={item.label}>
+                <button
+                  className="hover:text-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.5)] transition-all duration-300 px-3 py-1 rounded-full hover:bg-white/5"
+                  onClick={() => scrollToSection(item.id)}
+                >
+                  {item.label}
+                </button>
+              </li>
+            ))}
+        </ul>
+
+
+        <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+          <button
+            onClick={() => scrollToSection('contact')}
+            className="px-5 py-2 rounded-full bg-white text-black text-xs font-semibold tracking-wide hover:bg-gray-200 transition-all duration-300 hover:scale-105 shadow-[0_0_15px_-3px_rgba(255,255,255,0.3)]"
+          >
+            Let's Talk →
+          </button>
+        </div>
       </nav>
     </motion.header>
   );
