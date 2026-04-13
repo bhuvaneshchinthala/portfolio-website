@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -109,8 +109,14 @@ const BackgroundPlane = () => {
 export default function LiquidBackground() {
     return (
         <div className="absolute inset-0 z-0">
-            <Canvas style={{ background: '#000' }}>
-                <BackgroundPlane />
+            <Canvas 
+                style={{ background: '#000' }}
+                dpr={[1, 1.5]}
+                gl={{ powerPreference: 'high-performance', antialias: false, alpha: false, depth: false }}
+            >
+                <Suspense fallback={null}>
+                    <BackgroundPlane />
+                </Suspense>
             </Canvas>
         </div>
     );
