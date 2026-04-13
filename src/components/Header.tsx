@@ -47,6 +47,14 @@ export default function Header() {
                 About Me
               </Link>
             </li>
+            <li>
+              <Link
+                to="/cbum"
+                className="hover:text-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.5)] transition-all duration-300 px-3 py-1 rounded-full hover:bg-white/5 uppercase tracking-widest font-bold"
+              >
+                CBUM
+              </Link>
+            </li>
             {[
               { label: 'Projects', id: 'projects' },
               { label: 'Terminal', id: 'terminal' },

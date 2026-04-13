@@ -7,7 +7,6 @@ import FluidCursor from '@/components/ui/FluidCursor';
 // Lazy load below-the-fold components to improve initial load performance
 const AboutSection = React.lazy(() => import('@/components/AboutSection'));
 const TestimonialsSection = React.lazy(() => import('@/components/TestimonialsSection'));
-const AboutDamnGood = React.lazy(() => import('@/components/AboutDamnGood'));
 const Marquee = React.lazy(() => import('@/components/Marquee'));
 const CodeTerminal = React.lazy(() => import('@/components/CodeTerminal'));
 const ProjectsSection = React.lazy(() => import('@/components/ProjectsSection'));
@@ -35,10 +34,6 @@ export default function HomePage() {
 
               <ScrollReveal direction="up" distance={80} duration={1}>
                 <TestimonialsSection />
-              </ScrollReveal>
-
-              <ScrollReveal direction="up" distance={60} duration={1}>
-                <AboutDamnGood />
               </ScrollReveal>
 
               <Marquee />

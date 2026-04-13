@@ -5,6 +5,8 @@ import ErrorPage from '@/components/pages/ErrorPage';
 import HomePage from '@/components/pages/HomePage';
 import AboutMePage from '@/components/pages/AboutMePage';
 import PDFViewerPage from '@/components/pages/PDFViewerPage';
+import StabondarPage from '@/components/pages/StabondarPage';
+import CbumPage from '@/components/pages/CbumPage';
 import IntroLoader from '@/components/ui/IntroLoader';
 
 import { useLocation } from 'react-router-dom';
@@ -59,6 +61,14 @@ const router = createBrowserRouter([
       {
         path: "pdf-viewer",
         element: <PDFViewerPage />,
+      },
+      {
+        path: "stabondar",
+        element: <StabondarPage />,
+      },
+      {
+        path: "cbum",
+        element: <CbumPage />,
       },
       {
         path: "*",
