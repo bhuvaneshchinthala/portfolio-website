@@ -1,13 +1,15 @@
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, lazy, Suspense } from 'react';
 import { ScrollToTop } from '@/lib/scroll-to-top';
 import ErrorPage from '@/components/pages/ErrorPage';
 import HomePage from '@/components/pages/HomePage';
 import AboutMePage from '@/components/pages/AboutMePage';
 import PDFViewerPage from '@/components/pages/PDFViewerPage';
-import StabondarPage from '@/components/pages/StabondarPage';
-import CbumPage from '@/components/pages/CbumPage';
 import IntroLoader from '@/components/ui/IntroLoader';
+
+const StabondarPage = lazy(() => import('@/components/pages/StabondarPage'));
+const CbumPage = lazy(() => import('@/components/pages/CbumPage'));
+const SystemPortfolioPage = lazy(() => import('@/components/pages/SystemPortfolioPage'));
 
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -64,11 +66,15 @@ const router = createBrowserRouter([
       },
       {
         path: "stabondar",
-        element: <StabondarPage />,
+        element: <Suspense fallback={<div className="h-screen w-full bg-deep-black" />}><StabondarPage /></Suspense>,
       },
       {
         path: "cbum",
-        element: <CbumPage />,
+        element: <Suspense fallback={<div className="h-screen w-full bg-[#0d0b0d]" />}><CbumPage /></Suspense>,
+      },
+      {
+        path: "system",
+        element: <Suspense fallback={<div className="h-screen w-full bg-[#050505]" />}><SystemPortfolioPage /></Suspense>,
       },
       {
         path: "*",

@@ -13,8 +13,12 @@ export function getStaticPaths() {
     { params: { slug: 'pdf-viewer' } },
     { params: { slug: 'stabondar' } },
     { params: { slug: 'cbum' } },
+    { params: { slug: 'system' } },
   ];
 }
+
+const currentPath = Astro.url.pathname;
+const isCbumPage = currentPath.includes('/cbum');
 ---
 
 <html lang="en" class="w-full h-full">
@@ -24,7 +28,7 @@ export function getStaticPaths() {
   <body class="w-full h-full antialiased">
     <div id="root" class="w-full h-full relative cursor-none">
       <LenisWrapper client:only="react">
-        <MagneticCursor client:only="react" />
+        {!isCbumPage && <MagneticCursor client:only="react" />}
         {/* <GlobalBackground client:only="react" /> */}
         <AppRouter client:only="react" />
       </LenisWrapper>
