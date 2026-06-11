@@ -423,8 +423,14 @@ export default function DribbbleReplicaHero() {
             style={{ height: '400vh', background: '#050505' }}
         >
             <div ref={stickyRef} className="sticky top-0 h-screen w-full overflow-hidden" style={{ cursor: 'none' }}>
-                {/* Dark background */}
-                <div className="absolute inset-0 bg-[#050505] z-0" />
+                {/* Iron Man Scroll Frame Canvas — PRIMARY BACKGROUND */}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.5 }} className="absolute inset-0 z-0">
+                    <VideoScrollCanvas scrollProgress={scrollYProgress} />
+                </motion.div>
+                {/* Cinematic overlay for text readability */}
+                <div className="absolute inset-0 z-[1]" style={{
+                    background: 'linear-gradient(135deg, rgba(5,5,5,0.7) 0%, rgba(5,5,5,0.3) 40%, rgba(5,5,5,0.5) 70%, rgba(5,5,5,0.8) 100%)'
+                }} />
 
                 {/* ══ MOUSE SPOTLIGHT GLOW ══ */}
                 <div
@@ -600,10 +606,7 @@ export default function DribbbleReplicaHero() {
                     </AnimatePresence>
                 </div>
 
-                {/* User-controlled Scroll Video Canvas */}
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 2 }} className="absolute inset-0">
-                    <VideoScrollCanvas scrollProgress={scrollYProgress} />
-                </motion.div>
+                {/* (Scroll canvas moved to z-0 background layer above) */}
                 <PillNav />
 
                 {/* Progress Tracker */}
