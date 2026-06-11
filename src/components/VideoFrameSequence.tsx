@@ -9,7 +9,7 @@ export default function VideoFrameSequence() {
     offset: ["start start", "end start"]
   });
 
-  const frameCount = 192;
+  const frameCount = 169;
   const currentFrame = useTransform(scrollYProgress, [0, 1], [1, frameCount]);
   
   const [images, setImages] = useState<HTMLImageElement[]>([]);
@@ -21,7 +21,7 @@ export default function VideoFrameSequence() {
         const img = new window.Image();
         const paddedIndex = i.toString().padStart(4, '0');
         // The path depends on BASE_URL if any, but Vite handles / from public
-        img.src = `${import.meta.env.BASE_URL || '/'}video-frames/frame_${paddedIndex}.jpg`.replace('//', '/');
+        img.src = `${import.meta.env.BASE_URL || '/'}frames/frame_${paddedIndex}.jpg`.replace('//', '/');
         
         // Initial draw for frame 1 once it loads
         if (i === 1) {

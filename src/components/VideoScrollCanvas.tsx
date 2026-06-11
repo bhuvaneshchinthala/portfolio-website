@@ -5,11 +5,23 @@ interface VideoScrollCanvasProps {
     scrollProgress: MotionValue<number>;
     onLoadProgress?: (progress: number) => void;
     onLoaded?: () => void;
+    folder?: string;
+    frameCount?: number;
+    extension?: string;
 }
 
-export default function VideoScrollCanvas({ scrollProgress, onLoadProgress, onLoaded }: VideoScrollCanvasProps) {
+export default function VideoScrollCanvas({ 
+    scrollProgress, 
+    onLoadProgress, 
+    onLoaded,
+    folder = "/frames",
+    frameCount = 169,
+    extension = "jpg"
+}: VideoScrollCanvasProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
+
+    const [totalFrames, setTotalFrames] = useState(frameCount);
 
     // Smooth out the scroll progress for fluid playback
     const smoothProgress = useSpring(scrollProgress, {
@@ -18,18 +30,68 @@ export default function VideoScrollCanvas({ scrollProgress, onLoadProgress, onLo
         restDelta: 0.001
     });
 
-    // TOTAL FRAMES: 192 expected from the video file
-    const frameCount = 192;
-
     useEffect(() => {
         const loadImages = async () => {
+            // Probe the actual frame count in parallel batches to support any number of files in the folder
+            const probeFrameCount = async (): Promise<number> => {
+                let currentMax = 0;
+                const BATCH_SIZE = 15;
+                let foundEnd = false;
+                
+                while (!foundEnd) {
+                    const batchPromises = Array.from({ length: BATCH_SIZE }, (_, idx) => {
+                        const frameIdx = currentMax + idx + 1;
+                        const paddedIndex = frameIdx.toString().padStart(4, '0');
+                        const src = `${folder}/frame_${paddedIndex}.${extension}`;
+                        
+                        return new Promise<{ index: number; success: boolean }>((resolve) => {
+                            const img = new Image();
+                            img.onload = () => resolve({ index: frameIdx, success: true });
+                            img.onerror = () => resolve({ index: frameIdx, success: false });
+                            img.src = src;
+                        });
+                    });
+                    
+                    const results = await Promise.all(batchPromises);
+                    results.sort((a, b) => a.index - b.index);
+                    
+                    let batchSuccessCount = 0;
+                    for (const res of results) {
+                        if (res.success) {
+                            currentMax = res.index;
+                            batchSuccessCount++;
+                        } else {
+                            foundEnd = true;
+                            break;
+                        }
+                    }
+                    
+                    if (batchSuccessCount === 0) {
+                        break;
+                    }
+                }
+                
+                return currentMax;
+            };
+
+            let actualFrameCount = frameCount;
+            try {
+                const detected = await probeFrameCount();
+                if (detected > 0) {
+                    actualFrameCount = detected;
+                    setTotalFrames(detected);
+                }
+            } catch (e) {
+                console.error("Probing frames failed, falling back to default count:", e);
+            }
+
             const loadedImages: HTMLImageElement[] = [];
             let loadedCount = 0;
 
             // ═══ OPTIMIZED LOADER (Concurrency Limit) ═══
             // Prevent network clogging by loading max 6 images at a time.
             const MAX_CONCURRENCY = 6;
-            const imagesToLoad = Array.from({ length: frameCount }, (_, i) => i + 1);
+            const imagesToLoad = Array.from({ length: actualFrameCount }, (_, i) => i + 1);
 
             // Prioritize first 24 frames (1 second) for instant start
             const priorityBatch = imagesToLoad.slice(0, 24);
@@ -42,23 +104,23 @@ export default function VideoScrollCanvas({ scrollProgress, onLoadProgress, onLo
                 const i = queue.shift()!;
                 const img = new Image();
                 const paddedIndex = i.toString().padStart(4, '0');
-                img.src = `/video-frames/frame_${paddedIndex}.png`;
+                img.src = `${folder}/frame_${paddedIndex}.${extension}`;
 
                 return new Promise<void>((resolve) => {
                     img.onload = () => {
                         loadedImages[i - 1] = img;
                         loadedCount++;
-                        // Periodically update React state so we don't wait for all 192 frames
+                        // Periodically update React state so we don't wait for all frames
                         if (loadedCount % 4 === 0 || loadedCount === 1) {
                             setImages([...loadedImages]);
                         }
-                        onLoadProgress?.(Math.round((loadedCount / frameCount) * 100));
+                        onLoadProgress?.(Math.round((loadedCount / actualFrameCount) * 100));
                         resolve();
                     };
                     img.onerror = () => {
                         console.error(`Failed to load frame ${i}`);
                         loadedCount++;
-                        onLoadProgress?.(Math.round((loadedCount / frameCount) * 100));
+                        onLoadProgress?.(Math.round((loadedCount / actualFrameCount) * 100));
                         resolve();
                     };
                 }).then(() => loadNext()); // Chain next load
@@ -75,7 +137,7 @@ export default function VideoScrollCanvas({ scrollProgress, onLoadProgress, onLo
         };
 
         loadImages();
-    }, []);
+    }, [folder, frameCount, extension]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -111,8 +173,8 @@ export default function VideoScrollCanvas({ scrollProgress, onLoadProgress, onLo
 
             // Map progress 0-1 to frame index
             const frameIndex = Math.min(
-                frameCount - 1,
-                Math.floor(progress * (frameCount - 1))
+                totalFrames - 1,
+                Math.floor(progress * (totalFrames - 1))
             );
 
             let img = images[frameIndex];
@@ -165,7 +227,7 @@ export default function VideoScrollCanvas({ scrollProgress, onLoadProgress, onLo
             unsubscribe();
             window.removeEventListener('resize', handleResize);
         };
-    }, [smoothProgress, images]);
+    }, [smoothProgress, images, totalFrames]);
 
     return (
         <canvas

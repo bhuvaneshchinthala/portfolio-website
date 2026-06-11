@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BaseCrudService } from '@/integrations';
+// import { BaseCrudService } from '@/integrations';
 import { Skills } from '@/entities';
 import { Image } from '@/components/ui/image';
 import { ExternalLink } from 'lucide-react';
@@ -13,7 +13,8 @@ export default function OldAboutSection() {
   useEffect(() => {
     const loadSkills = async () => {
       setIsLoading(true);
-      const result = await BaseCrudService.getAll<Skills>('skills');
+      // const result = await BaseCrudService.getAll<Skills>('skills');
+      const result = { items: [] as Skills[] };
       setSkills(result.items);
       setIsLoading(false);
     };

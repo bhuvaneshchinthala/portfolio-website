@@ -4,6 +4,7 @@ import AppRouter from "@/components/Router";
 import GlobalBackground from "@/components/GlobalBackground";
 import MagneticCursor from "@/components/ui/MagneticCursor";
 import LenisWrapper from "@/components/LenisWrapper";
+import ChatBot from "@/components/ui/ChatBot";
 import "@/styles/global.css";
 
 export function getStaticPaths() {
@@ -31,6 +32,7 @@ const isCbumPage = currentPath.includes('/cbum');
         {!isCbumPage && <MagneticCursor client:only="react" />}
         {/* <GlobalBackground client:only="react" /> */}
         <AppRouter client:only="react" />
+        <ChatBot client:only="react" />
       </LenisWrapper>
     </div>
   </body>

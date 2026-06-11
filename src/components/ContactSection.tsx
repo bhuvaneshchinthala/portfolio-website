@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useScroll } from 'framer-motion';
 import { Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 import SectionHeading from '@/components/ui/SectionHeading';
 import TextMotionOverlay from '@/components/TextMotionOverlay';
+import VideoScrollCanvas from '@/components/VideoScrollCanvas';
 
 // ─────────────────────────────────────────────
 // Sub-Component: Magnetic Submit Button
@@ -63,6 +64,12 @@ const MagneticSubmitButton = ({ isSubmitting, isSent }: { isSubmitting: boolean,
 };
 
 export default function ContactSection() {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "end start"]
+    });
+
     const [formState, setFormState] = useState({
         name: '',
         email: '',
@@ -85,8 +92,18 @@ export default function ContactSection() {
     };
 
     return (
-        <section id="contact" className="pb-32 px-6 relative z-10">
-            <div className="max-w-4xl mx-auto">
+        <section ref={containerRef} id="contact" className="pb-32 px-6 relative z-10 overflow-hidden min-h-screen flex items-center justify-center">
+            {/* Background Scroll Video Canvas */}
+            <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+                <VideoScrollCanvas 
+                    scrollProgress={scrollYProgress} 
+                    folder="/frames2" 
+                    frameCount={169}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black" />
+            </div>
+
+            <div className="max-w-4xl mx-auto relative z-10 w-full">
                 <SectionHeading
                     number="05."
                     title="GET_IN"
