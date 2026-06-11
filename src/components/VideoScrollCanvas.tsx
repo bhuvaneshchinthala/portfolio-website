@@ -21,8 +21,6 @@ export default function VideoScrollCanvas({
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
 
-    const [totalFrames, setTotalFrames] = useState(frameCount);
-
     // Smooth out the scroll progress for fluid playback
     const smoothProgress = useSpring(scrollProgress, {
         stiffness: 60,
@@ -32,58 +30,7 @@ export default function VideoScrollCanvas({
 
     useEffect(() => {
         const loadImages = async () => {
-            // Probe the actual frame count in parallel batches to support any number of files in the folder
-            const probeFrameCount = async (): Promise<number> => {
-                let currentMax = 0;
-                const BATCH_SIZE = 15;
-                let foundEnd = false;
-                
-                while (!foundEnd) {
-                    const batchPromises = Array.from({ length: BATCH_SIZE }, (_, idx) => {
-                        const frameIdx = currentMax + idx + 1;
-                        const paddedIndex = frameIdx.toString().padStart(4, '0');
-                        const src = `${folder}/frame_${paddedIndex}.${extension}`;
-                        
-                        return new Promise<{ index: number; success: boolean }>((resolve) => {
-                            const img = new Image();
-                            img.onload = () => resolve({ index: frameIdx, success: true });
-                            img.onerror = () => resolve({ index: frameIdx, success: false });
-                            img.src = src;
-                        });
-                    });
-                    
-                    const results = await Promise.all(batchPromises);
-                    results.sort((a, b) => a.index - b.index);
-                    
-                    let batchSuccessCount = 0;
-                    for (const res of results) {
-                        if (res.success) {
-                            currentMax = res.index;
-                            batchSuccessCount++;
-                        } else {
-                            foundEnd = true;
-                            break;
-                        }
-                    }
-                    
-                    if (batchSuccessCount === 0) {
-                        break;
-                    }
-                }
-                
-                return currentMax;
-            };
-
-            let actualFrameCount = frameCount;
-            try {
-                const detected = await probeFrameCount();
-                if (detected > 0) {
-                    actualFrameCount = detected;
-                    setTotalFrames(detected);
-                }
-            } catch (e) {
-                console.error("Probing frames failed, falling back to default count:", e);
-            }
+            const actualFrameCount = frameCount;
 
             const loadedImages: HTMLImageElement[] = [];
             let loadedCount = 0;
@@ -173,8 +120,8 @@ export default function VideoScrollCanvas({
 
             // Map progress 0-1 to frame index
             const frameIndex = Math.min(
-                totalFrames - 1,
-                Math.floor(progress * (totalFrames - 1))
+                frameCount - 1,
+                Math.floor(progress * (frameCount - 1))
             );
 
             let img = images[frameIndex];
@@ -227,7 +174,7 @@ export default function VideoScrollCanvas({
             unsubscribe();
             window.removeEventListener('resize', handleResize);
         };
-    }, [smoothProgress, images, totalFrames]);
+    }, [smoothProgress, images, frameCount]);
 
     return (
         <canvas
