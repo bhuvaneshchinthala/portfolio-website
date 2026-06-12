@@ -74,21 +74,46 @@ export default function ContactSection() {
         name: '',
         email: '',
         projectType: 'Web Development',
-        message: ''
+        message: '',
+        _botcheck: '' // Honeypot field
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSent, setIsSent] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsSubmitting(false);
+        setError(null);
+        
+        try {
+            const formData = new FormData();
+            formData.append('name', formState.name);
+            formData.append('email', formState.email);
+            formData.append('projectType', formState.projectType);
+            formData.append('message', formState.message);
+            formData.append('_botcheck', formState._botcheck);
+
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to send message');
+            }
+
             setIsSent(true);
-            setFormState({ name: '', email: '', projectType: 'Web Development', message: '' });
-            setTimeout(() => setIsSent(false), 3000);
-        }, 1500);
+            setFormState({ name: '', email: '', projectType: 'Web Development', message: '', _botcheck: '' });
+            setTimeout(() => setIsSent(false), 5000);
+        } catch (err: any) {
+            console.error('Submission error:', err);
+            setError(err.message || 'Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -131,6 +156,27 @@ export default function ContactSection() {
                         <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent pointer-events-none" />
 
                         <form onSubmit={handleSubmit} className="space-y-12 relative z-10">
+
+                            {/* Honeypot Field (Hidden) */}
+                            <input 
+                                type="checkbox" 
+                                name="_botcheck" 
+                                className="hidden" 
+                                style={{ display: 'none' }}
+                                checked={formState._botcheck === 'true'}
+                                onChange={(e) => setFormState({ ...formState, _botcheck: e.target.checked ? 'true' : '' })}
+                            />
+
+                            {/* Error Message */}
+                            {error && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-xl text-sm font-medium"
+                                >
+                                    {error}
+                                </motion.div>
+                            )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                 {/* Name Input */}
