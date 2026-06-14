@@ -28,6 +28,16 @@ const socialLinks = [
 export default function SocialLinks() {
     return (
         <section className="py-20 relative z-20 flex flex-col items-center justify-center overflow-hidden">
+            {/* Background Porsche Image */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                <img 
+                    src="/images/porsche.png" 
+                    alt="Porsche Background" 
+                    className="w-full h-full object-cover object-center opacity-30 mix-blend-screen"
+                />
+                {/* Dark vignette overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]" />
+            </div>
 
             {/* Section Heading specific for Socials */}
             <motion.div
