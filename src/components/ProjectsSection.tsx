@@ -303,6 +303,16 @@ export default function ProjectsSection() {
             style={{ height: `${numProjects * 100}vh` }} // Make section tall enough to scroll horizontally
         >
             <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center perspective-1000">
+                {/* Background Deadpool Image */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <img 
+                        src="/images/deadpool.jpg" 
+                        alt="Deadpool Background" 
+                        className="w-full h-full object-cover object-center opacity-30 mix-blend-screen"
+                    />
+                    {/* Dark vignette overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a] pointer-events-none z-[1]" />
+                </div>
 
                 {/* Sticky Header */}
                 <div className="absolute top-12 md:top-24 left-8 md:left-[10vw] z-50 pointer-events-none">

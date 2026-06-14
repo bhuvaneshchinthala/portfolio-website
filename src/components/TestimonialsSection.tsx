@@ -88,8 +88,17 @@ export default function TestimonialsSection() {
     return (
         <section ref={sectionRef} className="relative min-h-screen bg-deep-black text-white flex flex-col justify-center py-24 overflow-hidden">
 
-            {/* Background Atmosphere */}
-            <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,40,0,0.03)_0%,transparent_70%)] pointer-events-none"></div>
+            {/* Background Atmosphere & Hulk Image */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                <img 
+                    src="/images/hulk.jpg" 
+                    alt="Red Hulk Background" 
+                    className="w-full h-full object-cover object-center opacity-35 mix-blend-screen"
+                />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,40,0,0.04)_0%,transparent_70%)] pointer-events-none"></div>
+                {/* Dark vignette overlay to keep text readable */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]"></div>
+            </div>
 
             {/* Massive Typography Header */}
             <div ref={headerRef} className="container mx-auto px-4 md:px-12 relative z-10 flex flex-col text-center md:text-left pt-20">

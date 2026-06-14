@@ -340,16 +340,24 @@ export default function CodeTerminal() {
       className="relative py-32 px-4 md:px-8 overflow-hidden"
       style={{ perspective: '1200px' }}
     >
-      {/* Background grid */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,40,0,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,40,0,0.6) 1px,transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
-      />
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 60%,rgba(255,40,0,0.07) 0%,transparent 70%)' }}
-      />
+      {/* Background grid & Hulk Image */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <img 
+          src="/images/hulk2.jpg" 
+          alt="Green Hulk Background" 
+          className="w-full h-full object-cover object-center opacity-30 mix-blend-screen"
+        />
+        <div className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,40,0,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,40,0,0.6) 1px,transparent 1px)`,
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 60%,rgba(255,40,0,0.07) 0%,transparent 70%)' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]" />
+      </div>
 
       <div className="max-w-[120rem] mx-auto relative z-10">
         <SectionHeading
