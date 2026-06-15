@@ -607,7 +607,6 @@ export default function DribbbleReplicaHero() {
                 </div>
 
                 {/* (Scroll canvas moved to z-0 background layer above) */}
-                <PillNav />
 
                 {/* Progress Tracker */}
                 <ProgressTracker active={activePhase} />
