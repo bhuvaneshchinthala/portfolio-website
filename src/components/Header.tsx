@@ -41,6 +41,38 @@ function ScrambleText({ text, active }: { text: string; active: boolean }) {
 
 function FireBackground({ active }: { active: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: 0, y: 0, active: false });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        active: true,
+      };
+    };
+
+    const handleMouseLeave = () => {
+      mouseRef.current.active = false;
+    };
+
+    const parent = canvas.parentElement;
+    if (parent) {
+      parent.addEventListener('mousemove', handleMouseMove);
+      parent.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    return () => {
+      if (parent) {
+        parent.removeEventListener('mousemove', handleMouseMove);
+        parent.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -66,13 +98,13 @@ function FireBackground({ active }: { active: boolean }) {
 
     const colors = {
       flame: [
-        'rgba(255, 225, 225, ', // White-hot core (slight red tint)
-        'rgba(255, 60, 0, ',    // Intense neon orange-red
-        'rgba(220, 15, 0, ',    // Pure crimson
-        'rgba(150, 5, 0, ',     // Dark burning red
+        'rgba(255, 235, 235, ', // White-hot core (slight red tint)
+        'rgba(255, 70, 0, ',    // Intense neon orange-red
+        'rgba(220, 15, 0, ',    // Pure brand crimson
+        'rgba(140, 5, 0, ',     // Dark burning red
       ],
-      smoke: 'rgba(75, 70, 70, ',
-      spark: 'rgba(255, 80, 0, ', // Orange-red spark
+      smoke: 'rgba(70, 65, 65, ',
+      spark: 'rgba(255, 90, 0, ', // Orange-red spark
     };
 
     const animate = () => {
@@ -87,6 +119,9 @@ function FireBackground({ active }: { active: boolean }) {
 
       ctx.clearRect(0, 0, width, height);
       ctx.globalCompositeOperation = 'screen';
+
+      // Oscillating ambient wind force based on time
+      const windForce = Math.sin(Date.now() * 0.0035) * 0.08;
 
       if (active) {
         // 1. Spawn flame particles
@@ -104,41 +139,56 @@ function FireBackground({ active }: { active: boolean }) {
             type: 'flame',
             colorBase: '',
             angle: Math.random() * Math.PI * 2,
-            wobbleSpeed: 0.05 + Math.random() * 0.05,
+            wobbleSpeed: 0.04 + Math.random() * 0.04,
           });
         }
 
         // 2. Spawn spark/ember particles
-        if (Math.random() < 0.35) {
+        if (Math.random() < 0.45) {
           particles.push({
             x: Math.random() * width,
             y: height - 1,
             trail: [],
             size: 1 + Math.random() * 1.5,
-            speedY: -(1.2 + Math.random() * 1.5),
+            speedY: -(1.5 + Math.random() * 1.8),
             speedX: (Math.random() - 0.5) * 0.8,
             life: 25 + Math.random() * 20,
             maxLife: 45,
             type: 'spark',
             colorBase: colors.spark,
             angle: Math.random() * Math.PI * 2,
-            wobbleSpeed: 0.1 + Math.random() * 0.1,
+            wobbleSpeed: 0.08 + Math.random() * 0.08,
           });
         }
       }
 
       particles = particles.filter(p => {
-        // Record trail for realistic fluid movement
+        // Record trail for smooth curve rendering
         p.trail.push({ x: p.x, y: p.y });
-        if (p.trail.length > 5) p.trail.shift();
+        if (p.trail.length > 6) p.trail.shift();
 
-        // Physics update
+        // Base physics updates
         p.x += p.speedX;
         p.y += p.speedY;
         
+        // Apply wind breeze
+        p.x += windForce;
+        
         // Wobble/turbulence pathing
         p.angle += p.wobbleSpeed;
-        p.x += Math.sin(p.angle) * 0.3;
+        p.x += Math.sin(p.angle) * 0.25;
+
+        // Mouse gravity sway (thermal attraction)
+        if (mouseRef.current.active) {
+          const dx = mouseRef.current.x - p.x;
+          const dy = mouseRef.current.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 70) {
+            const pullForce = (70 - dist) / 70;
+            p.speedX += (dx / dist) * pullForce * 0.12;
+            p.speedY += (dy / dist) * pullForce * 0.08;
+          }
+        }
 
         p.life--;
 
@@ -148,8 +198,8 @@ function FireBackground({ active }: { active: boolean }) {
         if (p.type === 'flame' && pct < 0.35) {
           p.type = 'smoke';
           p.colorBase = colors.smoke;
-          p.size = p.size * 1.5;
-          p.speedY *= 0.7;
+          p.size = p.size * 1.6;
+          p.speedY *= 0.6;
         }
 
         let alpha = 0;
@@ -170,22 +220,28 @@ function FireBackground({ active }: { active: boolean }) {
             colorStr = colors.flame[3];
           }
         } else if (p.type === 'spark') {
-          alpha = pct * 0.9;
+          alpha = pct * 0.95;
           size = p.size;
           colorStr = p.colorBase;
-          p.speedY += 0.01;
+          p.speedY += 0.008;
         } else if (p.type === 'smoke') {
-          alpha = pct * 0.25;
-          size = p.size * (1.5 - pct * 0.5);
+          alpha = pct * 0.22;
+          size = p.size * (1.6 - pct * 0.6);
           colorStr = p.colorBase;
         }
 
-        // Render trail as flame tongues
-        if (p.trail.length > 1 && (p.type === 'flame' || p.type === 'spark')) {
+        // Draw volumetric glow
+        ctx.shadowBlur = p.type === 'smoke' ? 0 : 8;
+        ctx.shadowColor = 'rgba(255, 40, 0, 0.5)';
+
+        // Render trail as flame tongues using quadratic curves
+        if (p.trail.length > 2 && (p.type === 'flame' || p.type === 'spark')) {
           ctx.beginPath();
           ctx.moveTo(p.trail[0].x, p.trail[0].y);
-          for (let i = 1; i < p.trail.length; i++) {
-            ctx.lineTo(p.trail[i].x, p.trail[i].y);
+          for (let i = 1; i < p.trail.length - 1; i++) {
+            const xc = (p.trail[i].x + p.trail[i + 1].x) / 2;
+            const yc = (p.trail[i].y + p.trail[i + 1].y) / 2;
+            ctx.quadraticCurveTo(p.trail[i].x, p.trail[i].y, xc, yc);
           }
           ctx.lineWidth = size;
           ctx.lineCap = 'round';
