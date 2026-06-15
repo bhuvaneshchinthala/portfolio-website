@@ -39,6 +39,101 @@ function ScrambleText({ text, active }: { text: string; active: boolean }) {
   return <>{display}</>;
 }
 
+function FireBackground({ active }: { active: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particles: Array<{
+      x: number;
+      y: number;
+      size: number;
+      speedY: number;
+      speedX: number;
+      life: number;
+      maxLife: number;
+      color: string;
+    }> = [];
+
+    const colors = [
+      'rgba(255, 60, 0, ',   // Deep red-orange
+      'rgba(255, 120, 0, ',  // Bright orange
+      'rgba(255, 185, 0, ',  // Hot yellow
+      'rgba(255, 235, 120, ', // White flame
+    ];
+
+    const animate = () => {
+      if (!canvas) return;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.globalCompositeOperation = 'screen';
+
+      if (active) {
+        // Spawn fire particles
+        for (let i = 0; i < 2; i++) {
+          const maxLife = 12 + Math.random() * 12;
+          particles.push({
+            x: Math.random() * width,
+            y: height - 1,
+            size: 2 + Math.random() * 3,
+            speedY: -(0.6 + Math.random() * 0.8),
+            speedX: (Math.random() - 0.5) * 0.25,
+            life: maxLife,
+            maxLife,
+            color: colors[Math.floor(Math.random() * colors.length)],
+          });
+        }
+      }
+
+      particles = particles.filter(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.speedX += (Math.random() - 0.5) * 0.05; // Turbulence
+        p.life--;
+
+        const pct = p.life / p.maxLife;
+        const alpha = pct * 0.8;
+        const size = p.size * (0.25 + pct * 0.75);
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = `${p.color}${alpha})`;
+        ctx.fill();
+
+        return p.life > 0;
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [active]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none z-0"
+      style={{ mixBlendMode: 'screen' }}
+    />
+  );
+}
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -118,9 +213,11 @@ export default function Header() {
                 {isHovered && (
                   <motion.div
                     layoutId="navbar-hover-pill"
-                    className="absolute inset-0 border rounded-none z-0 animate-fire-bg"
+                    className="absolute inset-0 border border-orange-500/35 bg-orange-950/10 rounded-none z-0 overflow-hidden shadow-[0_0_15px_rgba(255,80,0,0.2)]"
                     transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-                  />
+                  >
+                    <FireBackground active={isHovered} />
+                  </motion.div>
                 )}
 
                 {/* Sliding Cyber Dot Indicator at Bottom */}
@@ -169,13 +266,14 @@ export default function Header() {
             }}
             transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             onClick={() => scrollToSection('contact')}
-            className={`px-5 py-2 rounded-none text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 font-orbitron cursor-pointer ${
+            className={`relative overflow-hidden px-5 py-2 rounded-none text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 font-orbitron cursor-pointer ${
               hoveredIndex === navItems.length
-                ? 'animate-fire-bg text-orange-200'
+                ? 'border border-orange-500/40 bg-orange-950/20 text-orange-200 shadow-[0_0_20px_rgba(255,90,0,0.35)]'
                 : 'bg-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]'
             }`}
           >
-            Let's Talk →
+            <FireBackground active={hoveredIndex === navItems.length} />
+            <span className="relative z-10">Let's Talk →</span>
           </motion.button>
         </div>
       </motion.nav>
