@@ -376,24 +376,46 @@ export default function Header() {
                 {item.type === 'scroll' ? (
                   <motion.button
                     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                    className={`relative z-10 px-4 py-1.5 rounded-none transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center gap-2 ${
+                    className={`relative z-10 px-4 py-1.5 rounded-none transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
                       isHovered ? 'animate-fire-text' : 'text-gray-300'
                     }`}
                     onClick={() => scrollToSection(item.target!)}
                   >
-                    <item.icon size={13} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
-                    <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
+                    <item.icon size={14} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
+                    <motion.span
+                      initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                      animate={{ 
+                        width: isHovered ? 'auto' : 0, 
+                        opacity: isHovered ? 1 : 0,
+                        marginLeft: isHovered ? 6 : 0
+                      }}
+                      transition={{ duration: 0.25, ease: 'easeOut' }}
+                      className="overflow-hidden whitespace-nowrap flex items-center"
+                    >
+                      <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
+                    </motion.span>
                   </motion.button>
                 ) : (
                   <div className="flex items-center justify-center z-10">
                     <Link
                       to={item.to!}
-                      className={`relative block px-4 py-1.5 rounded-none transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center gap-2 ${
+                      className={`relative block px-4 py-1.5 rounded-none transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
                         isHovered ? 'animate-fire-text' : 'text-gray-300'
                       }`}
                     >
-                      <item.icon size={13} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
-                      <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
+                      <item.icon size={14} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
+                      <motion.span
+                        initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                        animate={{ 
+                          width: isHovered ? 'auto' : 0, 
+                          opacity: isHovered ? 1 : 0,
+                          marginLeft: isHovered ? 6 : 0
+                        }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="overflow-hidden whitespace-nowrap flex items-center"
+                      >
+                        <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
+                      </motion.span>
                     </Link>
                   </div>
                 )}
