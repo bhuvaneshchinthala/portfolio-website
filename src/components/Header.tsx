@@ -321,7 +321,7 @@ export default function Header() {
           setHoveredIndex(null);
         }}
         animate={{
-          scale: isNavbarHovered ? 1.05 : 0.75,
+          scale: isNavbarHovered ? 1.05 : 0.95,
           backgroundColor: 'rgb(10, 10, 10)', // Guaranteed solid background (no alpha)
           borderColor: isNavbarHovered ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.08)',
           boxShadow: isNavbarHovered 
@@ -329,7 +329,7 @@ export default function Header() {
             : '0 4px 12px -5px rgba(0,0,0,0.3)'
         }}
         transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-        className={`backdrop-blur-xl border border-white/10 rounded-none px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
+        className={`backdrop-blur-xl border border-white/10 rounded-xl px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
           scrolled 
             ? 'py-2' 
             : 'py-3'
@@ -348,8 +348,8 @@ export default function Header() {
                 className="relative py-1 flex flex-col items-center"
                 onMouseEnter={() => setHoveredIndex(index)}
                 animate={{
-                  scale: hoveredIndex === null ? 0.85 : (isHovered ? 1.25 : 0.75),
-                  opacity: hoveredIndex === null ? 0.65 : (isHovered ? 1 : 0.3),
+                  scale: hoveredIndex === null ? 0.9 : (isHovered ? 1.15 : 0.8),
+                  opacity: hoveredIndex === null ? 0.75 : (isHovered ? 1 : 0.45),
                 }}
                 transition={{ type: 'spring', stiffness: 380, damping: 24 }}
               >
@@ -357,7 +357,7 @@ export default function Header() {
                 {isHovered && (
                   <motion.div
                     layoutId="navbar-hover-pill"
-                    className="absolute inset-0 border border-orange-500/35 bg-orange-950/10 rounded-none z-0 overflow-hidden shadow-[0_0_15px_rgba(255,80,0,0.2)]"
+                    className="absolute inset-0 border border-orange-500/35 bg-orange-950/10 rounded-lg z-0 overflow-hidden shadow-[0_0_15px_rgba(255,80,0,0.2)]"
                     transition={{ type: 'spring', stiffness: 380, damping: 26 }}
                   >
                     <FireBackground active={isHovered} />
@@ -376,7 +376,7 @@ export default function Header() {
                 {item.type === 'scroll' ? (
                   <motion.button
                     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                    className={`relative z-10 px-4 py-1.5 rounded-none transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
+                    className={`relative z-10 px-4 py-1.5 rounded-lg transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
                       isHovered ? 'animate-fire-text' : 'text-gray-300'
                     }`}
                     onClick={() => scrollToSection(item.target!)}
@@ -399,7 +399,7 @@ export default function Header() {
                   <div className="flex items-center justify-center z-10">
                     <Link
                       to={item.to!}
-                      className={`relative block px-4 py-1.5 rounded-none transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
+                      className={`relative block px-4 py-1.5 rounded-lg transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
                         isHovered ? 'animate-fire-text' : 'text-gray-300'
                       }`}
                     >
@@ -429,12 +429,12 @@ export default function Header() {
           <motion.button
             onMouseEnter={() => setHoveredIndex(navItems.length)}
             animate={{
-              scale: hoveredIndex === null ? 0.85 : (hoveredIndex === navItems.length ? 1.25 : 0.75),
-              opacity: hoveredIndex === null ? 0.8 : (hoveredIndex === navItems.length ? 1 : 0.3),
+              scale: hoveredIndex === null ? 0.9 : (hoveredIndex === navItems.length ? 1.15 : 0.8),
+              opacity: hoveredIndex === null ? 0.85 : (hoveredIndex === navItems.length ? 1 : 0.5),
             }}
             transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             onClick={() => scrollToSection('contact')}
-            className={`relative overflow-hidden px-5 py-2 rounded-none text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 font-orbitron cursor-pointer ${
+            className={`relative overflow-hidden px-5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 font-orbitron cursor-pointer ${
               hoveredIndex === navItems.length
                 ? 'border border-orange-500/40 bg-orange-950/20 text-orange-200 shadow-[0_0_20px_rgba(255,90,0,0.35)]'
                 : 'bg-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]'
