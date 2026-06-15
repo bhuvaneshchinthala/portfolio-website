@@ -52,20 +52,28 @@ function FireBackground({ active }: { active: boolean }) {
     let particles: Array<{
       x: number;
       y: number;
+      trail: Array<{ x: number; y: number }>;
       size: number;
       speedY: number;
       speedX: number;
       life: number;
       maxLife: number;
-      color: string;
+      type: 'flame' | 'spark' | 'smoke';
+      colorBase: string;
+      angle: number;
+      wobbleSpeed: number;
     }> = [];
 
-    const colors = [
-      'rgba(255, 60, 0, ',   // Deep red-orange
-      'rgba(255, 120, 0, ',  // Bright orange
-      'rgba(255, 185, 0, ',  // Hot yellow
-      'rgba(255, 235, 120, ', // White flame
-    ];
+    const colors = {
+      flame: [
+        'rgba(255, 240, 180, ', // White hot core
+        'rgba(255, 190, 0, ',   // Hot yellow
+        'rgba(255, 90, 0, ',    // Fiery orange
+        'rgba(210, 20, 0, ',    // Deep red
+      ],
+      smoke: 'rgba(80, 75, 75, ',
+      spark: 'rgba(255, 160, 30, ',
+    };
 
     const animate = () => {
       if (!canvas) return;
@@ -81,36 +89,115 @@ function FireBackground({ active }: { active: boolean }) {
       ctx.globalCompositeOperation = 'screen';
 
       if (active) {
-        // Spawn fire particles
+        // 1. Spawn flame particles
         for (let i = 0; i < 2; i++) {
-          const maxLife = 12 + Math.random() * 12;
+          const maxLife = 15 + Math.random() * 15;
+          particles.push({
+            x: Math.random() * width,
+            y: height + 2,
+            trail: [],
+            size: 3 + Math.random() * 4,
+            speedY: -(0.5 + Math.random() * 0.8),
+            speedX: (Math.random() - 0.5) * 0.15,
+            life: maxLife,
+            maxLife,
+            type: 'flame',
+            colorBase: '',
+            angle: Math.random() * Math.PI * 2,
+            wobbleSpeed: 0.05 + Math.random() * 0.05,
+          });
+        }
+
+        // 2. Spawn spark/ember particles
+        if (Math.random() < 0.35) {
           particles.push({
             x: Math.random() * width,
             y: height - 1,
-            size: 2 + Math.random() * 3,
-            speedY: -(0.6 + Math.random() * 0.8),
-            speedX: (Math.random() - 0.5) * 0.25,
-            life: maxLife,
-            maxLife,
-            color: colors[Math.floor(Math.random() * colors.length)],
+            trail: [],
+            size: 1 + Math.random() * 1.5,
+            speedY: -(1.2 + Math.random() * 1.5),
+            speedX: (Math.random() - 0.5) * 0.8,
+            life: 25 + Math.random() * 20,
+            maxLife: 45,
+            type: 'spark',
+            colorBase: colors.spark,
+            angle: Math.random() * Math.PI * 2,
+            wobbleSpeed: 0.1 + Math.random() * 0.1,
           });
         }
       }
 
       particles = particles.filter(p => {
+        // Record trail for realistic fluid movement
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 5) p.trail.shift();
+
+        // Physics update
         p.x += p.speedX;
         p.y += p.speedY;
-        p.speedX += (Math.random() - 0.5) * 0.05; // Turbulence
+        
+        // Wobble/turbulence pathing
+        p.angle += p.wobbleSpeed;
+        p.x += Math.sin(p.angle) * 0.3;
+
         p.life--;
 
         const pct = p.life / p.maxLife;
-        const alpha = pct * 0.8;
-        const size = p.size * (0.25 + pct * 0.75);
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-        ctx.fillStyle = `${p.color}${alpha})`;
-        ctx.fill();
+        // Transition flame to smoke near the end of life
+        if (p.type === 'flame' && pct < 0.35) {
+          p.type = 'smoke';
+          p.colorBase = colors.smoke;
+          p.size = p.size * 1.5;
+          p.speedY *= 0.7;
+        }
+
+        let alpha = 0;
+        let size = p.size;
+        let colorStr = '';
+
+        if (p.type === 'flame') {
+          alpha = pct * 0.8;
+          size = p.size * (0.3 + pct * 0.7);
+          
+          if (pct > 0.75) {
+            colorStr = colors.flame[0];
+          } else if (pct > 0.5) {
+            colorStr = colors.flame[1];
+          } else if (pct > 0.25) {
+            colorStr = colors.flame[2];
+          } else {
+            colorStr = colors.flame[3];
+          }
+        } else if (p.type === 'spark') {
+          alpha = pct * 0.9;
+          size = p.size;
+          colorStr = p.colorBase;
+          p.speedY += 0.01;
+        } else if (p.type === 'smoke') {
+          alpha = pct * 0.25;
+          size = p.size * (1.5 - pct * 0.5);
+          colorStr = p.colorBase;
+        }
+
+        // Render trail as flame tongues
+        if (p.trail.length > 1 && (p.type === 'flame' || p.type === 'spark')) {
+          ctx.beginPath();
+          ctx.moveTo(p.trail[0].x, p.trail[0].y);
+          for (let i = 1; i < p.trail.length; i++) {
+            ctx.lineTo(p.trail[i].x, p.trail[i].y);
+          }
+          ctx.lineWidth = size;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.strokeStyle = `${colorStr}${alpha})`;
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+          ctx.fillStyle = `${colorStr}${alpha})`;
+          ctx.fill();
+        }
 
         return p.life > 0;
       });
