@@ -87,10 +87,15 @@ export default function Header() {
           {navItems.map((item, index) => {
             const isHovered = hoveredIndex === index;
             return (
-              <li 
+              <motion.li 
                 key={item.label}
                 className="relative py-1 flex flex-col items-center"
                 onMouseEnter={() => setHoveredIndex(index)}
+                animate={{
+                  scale: hoveredIndex === null ? 0.85 : (isHovered ? 1.25 : 0.75),
+                  opacity: hoveredIndex === null ? 0.65 : (isHovered ? 1 : 0.3),
+                }}
+                transition={{ type: 'spring', stiffness: 380, damping: 24 }}
               >
                 {/* Advanced Sliding Hover Indicator Pill */}
                 {isHovered && (
@@ -112,7 +117,6 @@ export default function Header() {
                 
                 {item.type === 'scroll' ? (
                   <motion.button
-                    whileHover={{ scale: 1.12 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                     style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
                     className="relative z-10 px-4 py-1.5 rounded-full text-gray-300 hover:text-red-400 transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-syne font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center"
@@ -121,11 +125,7 @@ export default function Header() {
                     <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
                   </motion.button>
                 ) : (
-                  <motion.div
-                    whileHover={{ scale: 1.12 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                    className="flex items-center justify-center z-10"
-                  >
+                  <div className="flex items-center justify-center z-10">
                     <Link
                       to={item.to!}
                       style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
@@ -133,21 +133,27 @@ export default function Header() {
                     >
                       <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
                     </Link>
-                  </motion.div>
+                  </div>
                 )}
-              </li>
+              </motion.li>
             );
           })}
         </ul>
 
 
-        <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-          <button
+        <div className="flex items-center gap-4 pl-4 border-l border-white/10" onMouseLeave={() => setHoveredIndex(null)}>
+          <motion.button
+            onMouseEnter={() => setHoveredIndex(navItems.length)}
+            animate={{
+              scale: hoveredIndex === null ? 0.85 : (hoveredIndex === navItems.length ? 1.25 : 0.75),
+              opacity: hoveredIndex === null ? 0.8 : (hoveredIndex === navItems.length ? 1 : 0.3),
+            }}
+            transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             onClick={() => scrollToSection('contact')}
-            className="px-5 py-2 rounded-full bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.12em] hover:bg-red-500 hover:scale-105 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 font-syne"
+            className="px-5 py-2 rounded-full bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.12em] hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 font-syne cursor-pointer"
           >
             Let's Talk →
-          </button>
+          </motion.button>
         </div>
       </nav>
     </motion.header>
