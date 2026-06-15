@@ -42,6 +42,7 @@ function ScrambleText({ text, active }: { text: string; active: boolean }) {
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isNavbarHovered, setIsNavbarHovered] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,11 +75,27 @@ export default function Header() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className="fixed top-6 left-0 right-0 z-[90] flex justify-center px-4"
     >
-      <nav className={`bg-neutral-900/85 backdrop-blur-md border rounded-full px-6 transition-all duration-500 flex items-center gap-8 shadow-lg ${
-        scrolled 
-          ? 'py-2 border-red-500/20 shadow-red-500/10 bg-black/90' 
-          : 'py-3 border-red-500/10 shadow-red-500/5'
-      }`}>
+      <motion.nav 
+        onMouseEnter={() => setIsNavbarHovered(true)}
+        onMouseLeave={() => {
+          setIsNavbarHovered(false);
+          setHoveredIndex(null);
+        }}
+        animate={{
+          scale: isNavbarHovered ? 1.05 : 0.75,
+          opacity: isNavbarHovered ? 1 : 0.5,
+          borderColor: isNavbarHovered ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.08)',
+          boxShadow: isNavbarHovered 
+            ? '0 20px 40px -15px rgba(239,68,68,0.3)' 
+            : '0 4px 12px -5px rgba(0,0,0,0.3)'
+        }}
+        transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+        className={`bg-neutral-900/85 backdrop-blur-md border rounded-full px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
+          scrolled 
+            ? 'py-2 bg-black/90' 
+            : 'py-3'
+        }`}
+      >
 
         <ul 
           className="relative flex items-center gap-2 font-syne text-[11px] font-bold uppercase tracking-[0.15em] text-gray-200 hidden md:flex"
@@ -155,7 +172,7 @@ export default function Header() {
             Let's Talk →
           </motion.button>
         </div>
-      </nav>
+      </motion.nav>
     </motion.header>
   );
 }
