@@ -33,7 +33,7 @@ export default function SocialLinks() {
                 <img 
                     src="/images/batman.png" 
                     alt="Batman Background" 
-                    className="w-full h-full object-cover object-center opacity-30 mix-blend-screen"
+                    className="w-full h-full object-cover object-center opacity-40" 
                 />
                 {/* Dark vignette overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]" />
