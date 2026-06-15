@@ -90,7 +90,7 @@ export default function Header() {
             : '0 4px 12px -5px rgba(0,0,0,0.3)'
         }}
         transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-        className={`backdrop-blur-xl border border-white/10 rounded-full px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
+        className={`backdrop-blur-xl border border-white/10 rounded-none px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
           scrolled 
             ? 'py-2' 
             : 'py-3'
@@ -118,7 +118,7 @@ export default function Header() {
                 {isHovered && (
                   <motion.div
                     layoutId="navbar-hover-pill"
-                    className="absolute inset-0 bg-red-500/10 border border-red-500/25 rounded-full z-0 shadow-[0_0_15px_rgba(239,68,68,0.15)]"
+                    className="absolute inset-0 bg-red-500/10 border border-red-500/25 rounded-none z-0 shadow-[0_0_15px_rgba(239,68,68,0.15)]"
                     transition={{ type: 'spring', stiffness: 380, damping: 26 }}
                   />
                 )}
@@ -136,7 +136,7 @@ export default function Header() {
                   <motion.button
                     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                     style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
-                    className="relative z-10 px-4 py-1.5 rounded-full text-gray-300 hover:text-red-400 transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-syne font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center"
+                    className="relative z-10 px-4 py-1.5 rounded-none text-gray-300 hover:text-red-400 transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-syne font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center"
                     onClick={() => scrollToSection(item.target!)}
                   >
                     <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
@@ -146,7 +146,7 @@ export default function Header() {
                     <Link
                       to={item.to!}
                       style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
-                      className="relative block px-4 py-1.5 rounded-full text-gray-300 hover:text-red-400 transition-all duration-200 font-syne font-bold uppercase tracking-[0.15em] text-[11px]"
+                      className="relative block px-4 py-1.5 rounded-none text-gray-300 hover:text-red-400 transition-all duration-200 font-syne font-bold uppercase tracking-[0.15em] text-[11px]"
                     >
                       <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
                     </Link>
@@ -167,7 +167,7 @@ export default function Header() {
             }}
             transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             onClick={() => scrollToSection('contact')}
-            className="px-5 py-2 rounded-full bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.12em] hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 font-syne cursor-pointer"
+            className="px-5 py-2 rounded-none bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.12em] hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 font-syne cursor-pointer"
           >
             Let's Talk →
           </motion.button>
