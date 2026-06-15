@@ -83,14 +83,9 @@ export default function Header() {
         }}
         animate={{
           scale: isNavbarHovered ? 1.05 : 0.75,
-          backgroundColor: 'rgb(10, 10, 10)', // Guaranteed solid background (no alpha)
-          borderColor: isNavbarHovered ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.08)',
-          boxShadow: isNavbarHovered 
-            ? '0 20px 40px -15px rgba(239,68,68,0.3)' 
-            : '0 4px 12px -5px rgba(0,0,0,0.3)'
         }}
         transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-        className={`backdrop-blur-xl border rounded-full px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
+        className={`px-6 flex items-center gap-8 transition-[padding] duration-500 ${
           scrolled 
             ? 'py-2' 
             : 'py-3'
