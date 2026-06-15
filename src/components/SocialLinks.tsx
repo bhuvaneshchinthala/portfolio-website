@@ -28,11 +28,11 @@ const socialLinks = [
 export default function SocialLinks() {
     return (
         <section className="py-20 relative z-20 flex flex-col items-center justify-center overflow-hidden">
-            {/* Background Porsche Image */}
+            {/* Background Batman Image */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
                 <img 
-                    src="/images/porsche.png" 
-                    alt="Porsche Background" 
+                    src="/images/batman.png" 
+                    alt="Batman Background" 
                     className="w-full h-full object-cover object-center opacity-30 mix-blend-screen"
                 />
                 {/* Dark vignette overlay */}
