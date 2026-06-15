@@ -314,94 +314,82 @@ export default function Header() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className="fixed top-6 left-0 right-0 z-[90] flex justify-center px-4"
     >
-      <motion.nav 
-        onMouseEnter={() => setIsNavbarHovered(true)}
-        onMouseLeave={() => {
-          setIsNavbarHovered(false);
-          setHoveredIndex(null);
-        }}
-        animate={{
-          scale: isNavbarHovered ? 1.05 : 0.95,
-          backgroundColor: 'rgb(10, 10, 10)', // Guaranteed solid background (no alpha)
-          borderColor: isNavbarHovered ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.08)',
-          boxShadow: isNavbarHovered 
-            ? '0 20px 40px -15px rgba(239,68,68,0.3)' 
-            : '0 4px 12px -5px rgba(0,0,0,0.3)'
-        }}
-        transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-        className={`backdrop-blur-xl border border-white/10 rounded-xl px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
-          scrolled 
-            ? 'py-2' 
-            : 'py-3'
-        }`}
-      >
+      {/* Sweeping Laser Border Wrapper */}
+      <div className="relative p-[1px] overflow-hidden rounded-xl bg-white/10 shadow-2xl flex justify-center items-center group">
+        {/* The rotating laser sweep */}
+        <div className="absolute inset-[-150px] bg-[conic-gradient(from_0deg,transparent_45%,#ff3b00_50%,transparent_55%)] animate-[spin_6s_linear_infinite] opacity-40 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-        <ul 
-          className="relative flex items-center gap-2 font-orbitron text-[11px] font-bold uppercase tracking-[0.15em] text-gray-200 hidden md:flex"
-          onMouseLeave={() => setHoveredIndex(null)}
+        <motion.nav 
+          onMouseEnter={() => setIsNavbarHovered(true)}
+          onMouseLeave={() => {
+            setIsNavbarHovered(false);
+            setHoveredIndex(null);
+          }}
+          animate={{
+            scale: isNavbarHovered ? 1.05 : 0.95,
+            backgroundColor: 'rgb(10, 10, 10)', // Guaranteed solid background (no alpha)
+            borderColor: isNavbarHovered ? 'rgba(255,59,0,0.3)' : 'rgba(255,255,255,0.05)',
+            boxShadow: isNavbarHovered 
+              ? '0 20px 40px -15px rgba(255,59,0,0.3)' 
+              : '0 4px 12px -5px rgba(0,0,0,0.3)'
+          }}
+          transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+          className={`backdrop-blur-xl border border-transparent rounded-[11px] px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
+            scrolled 
+              ? 'py-2' 
+              : 'py-3'
+          }`}
         >
-          {navItems.map((item, index) => {
-            const isHovered = hoveredIndex === index;
-            return (
-              <motion.li 
-                key={item.label}
-                className="relative py-1 flex flex-col items-center"
-                onMouseEnter={() => setHoveredIndex(index)}
-                animate={{
-                  scale: hoveredIndex === null ? 0.9 : (isHovered ? 1.15 : 0.8),
-                  opacity: hoveredIndex === null ? 0.75 : (isHovered ? 1 : 0.45),
-                }}
-                transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-              >
-                {/* Advanced Sliding Hover Indicator Pill */}
-                {isHovered && (
-                  <motion.div
-                    layoutId="navbar-hover-pill"
-                    className="absolute inset-0 border border-orange-500/35 bg-orange-950/10 rounded-lg z-0 overflow-hidden shadow-[0_0_15px_rgba(255,80,0,0.2)]"
-                    transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-                  >
-                    <FireBackground active={isHovered} />
-                  </motion.div>
-                )}
 
-                {/* Sliding Cyber Dot Indicator at Bottom */}
-                {isHovered && (
-                  <motion.div
-                    layoutId="navbar-hover-dot"
-                    className="absolute bottom-[-4px] w-1.5 h-1.5 rounded-full z-20 animate-fire-dot"
-                    transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-                  />
-                )}
-                
-                {item.type === 'scroll' ? (
-                  <motion.button
-                    transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                    className={`relative z-10 px-4 py-1.5 rounded-lg transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
-                      isHovered ? 'animate-fire-text' : 'text-gray-300'
-                    }`}
-                    onClick={() => scrollToSection(item.target!)}
-                  >
-                    <item.icon size={14} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
-                    <motion.span
-                      initial={{ width: 0, opacity: 0, marginLeft: 0 }}
-                      animate={{ 
-                        width: isHovered ? 'auto' : 0, 
-                        opacity: isHovered ? 1 : 0,
-                        marginLeft: isHovered ? 6 : 0
-                      }}
-                      transition={{ duration: 0.25, ease: 'easeOut' }}
-                      className="overflow-hidden whitespace-nowrap flex items-center"
+          <ul 
+            className="relative flex items-center gap-2 font-orbitron text-[11px] font-bold uppercase tracking-[0.15em] text-gray-200 hidden md:flex"
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            {navItems.map((item, index) => {
+              const isHovered = hoveredIndex === index;
+              return (
+                <motion.li 
+                  key={item.label}
+                  className="relative py-1 flex flex-col items-center"
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  animate={{
+                    scale: hoveredIndex === null ? 0.9 : (isHovered ? 1.15 : 0.8),
+                    opacity: hoveredIndex === null ? 0.75 : (isHovered ? 1 : 0.45),
+                  }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+                >
+                  {/* Advanced Sliding Hover Indicator Pill */}
+                  {isHovered && (
+                    <motion.div
+                      layoutId="navbar-hover-pill"
+                      className="absolute inset-0 border border-orange-500/35 bg-orange-950/10 rounded-lg z-0 overflow-hidden shadow-[0_0_15px_rgba(255,80,0,0.2)]"
+                      transition={{ type: 'spring', stiffness: 380, damping: 26 }}
                     >
-                      <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
-                    </motion.span>
-                  </motion.button>
-                ) : (
-                  <div className="flex items-center justify-center z-10">
-                    <Link
-                      to={item.to!}
-                      className={`relative block px-4 py-1.5 rounded-lg transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
+                      <FireBackground active={isHovered} />
+                      {/* Glowing Tech Corner Brackets */}
+                      <div className="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-orange-500/70 pointer-events-none" />
+                      <div className="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-orange-500/70 pointer-events-none" />
+                      <div className="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-orange-500/70 pointer-events-none" />
+                      <div className="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-orange-500/70 pointer-events-none" />
+                    </motion.div>
+                  )}
+
+                  {/* Sliding Cyber Dot Indicator at Bottom */}
+                  {isHovered && (
+                    <motion.div
+                      layoutId="navbar-hover-dot"
+                      className="absolute bottom-[-4px] w-1.5 h-1.5 rounded-full z-20 animate-fire-dot"
+                      transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+                    />
+                  )}
+                  
+                  {item.type === 'scroll' ? (
+                    <motion.button
+                      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                      className={`relative z-10 px-4 py-1.5 rounded-lg transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
                         isHovered ? 'animate-fire-text' : 'text-gray-300'
                       }`}
+                      onClick={() => scrollToSection(item.target!)}
                     >
                       <item.icon size={14} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
                       <motion.span
@@ -416,35 +404,58 @@ export default function Header() {
                       >
                         <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
                       </motion.span>
-                    </Link>
-                  </div>
-                )}
-              </motion.li>
-            );
-          })}
-        </ul>
+                    </motion.button>
+                  ) : (
+                    <div className="flex items-center justify-center z-10">
+                      <Link
+                        to={item.to!}
+                        className={`relative block px-4 py-1.5 rounded-lg transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
+                          isHovered ? 'animate-fire-text' : 'text-gray-300'
+                        }`}
+                      >
+                        <item.icon size={14} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
+                        <motion.span
+                          initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          animate={{ 
+                            width: isHovered ? 'auto' : 0, 
+                            opacity: isHovered ? 1 : 0,
+                            marginLeft: isHovered ? 6 : 0
+                          }}
+                          transition={{ duration: 0.25, ease: 'easeOut' }}
+                          className="overflow-hidden whitespace-nowrap flex items-center"
+                        >
+                          <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
+                        </motion.span>
+                      </Link>
+                    </div>
+                  )}
+                </motion.li>
+              );
+            })}
+          </ul>
 
 
-        <div className="flex items-center gap-4 pl-4 border-l border-white/10" onMouseLeave={() => setHoveredIndex(null)}>
-          <motion.button
-            onMouseEnter={() => setHoveredIndex(navItems.length)}
-            animate={{
-              scale: hoveredIndex === null ? 0.9 : (hoveredIndex === navItems.length ? 1.15 : 0.8),
-              opacity: hoveredIndex === null ? 0.85 : (hoveredIndex === navItems.length ? 1 : 0.5),
-            }}
-            transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-            onClick={() => scrollToSection('contact')}
-            className={`relative overflow-hidden px-5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 font-orbitron cursor-pointer ${
-              hoveredIndex === navItems.length
-                ? 'border border-orange-500/40 bg-orange-950/20 text-orange-200 shadow-[0_0_20px_rgba(255,90,0,0.35)]'
-                : 'bg-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]'
-            }`}
-          >
-            <FireBackground active={hoveredIndex === navItems.length} />
-            <span className="relative z-10">Let's Talk →</span>
-          </motion.button>
-        </div>
-      </motion.nav>
+          <div className="flex items-center gap-4 pl-4 border-l border-white/10" onMouseLeave={() => setHoveredIndex(null)}>
+            <motion.button
+              onMouseEnter={() => setHoveredIndex(navItems.length)}
+              animate={{
+                scale: hoveredIndex === null ? 0.9 : (hoveredIndex === navItems.length ? 1.15 : 0.8),
+                opacity: hoveredIndex === null ? 0.85 : (hoveredIndex === navItems.length ? 1 : 0.5),
+              }}
+              transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+              onClick={() => scrollToSection('contact')}
+              className={`relative overflow-hidden px-5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 font-orbitron cursor-pointer ${
+                hoveredIndex === navItems.length
+                  ? 'border border-orange-500/40 bg-orange-950/20 text-orange-200 shadow-[0_0_20px_rgba(255,90,0,0.35)]'
+                  : 'bg-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]'
+              }`}
+            >
+              <FireBackground active={hoveredIndex === navItems.length} />
+              <span className="relative z-10">Let's Talk →</span>
+            </motion.button>
+          </div>
+        </motion.nav>
+      </div>
     </motion.header>
   );
 }
