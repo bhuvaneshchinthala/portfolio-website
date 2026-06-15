@@ -98,7 +98,7 @@ export default function Header() {
       >
 
         <ul 
-          className="relative flex items-center gap-2 font-syne text-[11px] font-bold uppercase tracking-[0.15em] text-gray-200 hidden md:flex"
+          className="relative flex items-center gap-2 font-orbitron text-[11px] font-bold uppercase tracking-[0.15em] text-gray-200 hidden md:flex"
           onMouseLeave={() => setHoveredIndex(null)}
         >
           {navItems.map((item, index) => {
@@ -136,7 +136,7 @@ export default function Header() {
                   <motion.button
                     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                     style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
-                    className="relative z-10 px-4 py-1.5 rounded-none text-gray-300 hover:text-red-400 transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-syne font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center"
+                    className="relative z-10 px-4 py-1.5 rounded-none text-gray-300 hover:text-red-400 transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center"
                     onClick={() => scrollToSection(item.target!)}
                   >
                     <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
@@ -146,7 +146,7 @@ export default function Header() {
                     <Link
                       to={item.to!}
                       style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
-                      className="relative block px-4 py-1.5 rounded-none text-gray-300 hover:text-red-400 transition-all duration-200 font-syne font-bold uppercase tracking-[0.15em] text-[11px]"
+                      className="relative block px-4 py-1.5 rounded-none text-gray-300 hover:text-red-400 transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px]"
                     >
                       <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
                     </Link>
@@ -167,7 +167,7 @@ export default function Header() {
             }}
             transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             onClick={() => scrollToSection('contact')}
-            className="px-5 py-2 rounded-none bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.12em] hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 font-syne cursor-pointer"
+            className="px-5 py-2 rounded-none bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.12em] hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 font-orbitron cursor-pointer"
           >
             Let's Talk →
           </motion.button>
