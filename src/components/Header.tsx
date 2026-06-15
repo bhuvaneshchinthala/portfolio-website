@@ -66,13 +66,13 @@ function FireBackground({ active }: { active: boolean }) {
 
     const colors = {
       flame: [
-        'rgba(255, 240, 180, ', // White hot core
-        'rgba(255, 190, 0, ',   // Hot yellow
-        'rgba(255, 90, 0, ',    // Fiery orange
-        'rgba(210, 20, 0, ',    // Deep red
+        'rgba(255, 225, 225, ', // White-hot core (slight red tint)
+        'rgba(255, 60, 0, ',    // Intense neon orange-red
+        'rgba(220, 15, 0, ',    // Pure crimson
+        'rgba(150, 5, 0, ',     // Dark burning red
       ],
-      smoke: 'rgba(80, 75, 75, ',
-      spark: 'rgba(255, 160, 30, ',
+      smoke: 'rgba(75, 70, 70, ',
+      spark: 'rgba(255, 80, 0, ', // Orange-red spark
     };
 
     const animate = () => {
