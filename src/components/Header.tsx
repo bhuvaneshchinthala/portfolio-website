@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTransitionStore } from '@/lib/store';
+import { Home, User, Dumbbell, FolderGit2, Terminal, Mail } from 'lucide-react';
 
 // Micro-scramble component for futuristic text transitions on hover
 function ScrambleText({ text, active }: { text: string; active: boolean }) {
@@ -298,12 +299,12 @@ export default function Header() {
   };
 
   const navItems = [
-    { label: 'Home', type: 'scroll', target: 'hero' },
-    { label: 'About Me', type: 'link', to: '/about-me' },
-    { label: 'CBUM', type: 'link', to: '/cbum' },
-    { label: 'Projects', type: 'scroll', target: 'projects' },
-    { label: 'Terminal', type: 'scroll', target: 'terminal' },
-    { label: 'Contact', type: 'scroll', target: 'contact' },
+    { label: 'Home', type: 'scroll', target: 'hero', icon: Home },
+    { label: 'About Me', type: 'link', to: '/about-me', icon: User },
+    { label: 'CBUM', type: 'link', to: '/cbum', icon: Dumbbell },
+    { label: 'Projects', type: 'scroll', target: 'projects', icon: FolderGit2 },
+    { label: 'Terminal', type: 'scroll', target: 'terminal', icon: Terminal },
+    { label: 'Contact', type: 'scroll', target: 'contact', icon: Mail },
   ];
 
   return (
@@ -375,21 +376,23 @@ export default function Header() {
                 {item.type === 'scroll' ? (
                   <motion.button
                     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                    className={`relative z-10 px-4 py-1.5 rounded-none transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center ${
+                    className={`relative z-10 px-4 py-1.5 rounded-none transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center gap-2 ${
                       isHovered ? 'animate-fire-text' : 'text-gray-300'
                     }`}
                     onClick={() => scrollToSection(item.target!)}
                   >
+                    <item.icon size={13} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
                     <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
                   </motion.button>
                 ) : (
                   <div className="flex items-center justify-center z-10">
                     <Link
                       to={item.to!}
-                      className={`relative block px-4 py-1.5 rounded-none transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] ${
+                      className={`relative block px-4 py-1.5 rounded-none transition-all duration-200 font-orbitron font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center gap-2 ${
                         isHovered ? 'animate-fire-text' : 'text-gray-300'
                       }`}
                     >
+                      <item.icon size={13} className={isHovered ? 'animate-pulse' : 'text-gray-400'} />
                       <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
                     </Link>
                   </div>
