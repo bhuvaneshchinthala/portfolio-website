@@ -32,12 +32,12 @@ function cosineSimilarity(a: number[], b: number[]): number {
 
 // Gemini Embedding API helper
 async function getEmbedding(text: string, apiKey: string): Promise<number[]> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2:embedContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'models/text-embedding-004',
+      model: 'models/gemini-embedding-2',
       content: { parts: [{ text }] }
     })
   });
@@ -51,27 +51,10 @@ async function getEmbedding(text: string, apiKey: string): Promise<number[]> {
   return data.embedding.values;
 }
 
-// Gemini Batch Embedding API helper
+// Gemini Batch Embedding API helper using Promise.all parallel embedding calls
 async function getBatchEmbeddings(texts: string[], apiKey: string): Promise<number[][]> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:batchEmbedContents?key=${apiKey}`;
-  const requests = texts.map(t => ({
-    model: 'models/text-embedding-004',
-    content: { parts: [{ text: t }] }
-  }));
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ requests })
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Batch Embedding API failed (Status: ${response.status}): ${errorText}`);
-  }
-
-  const data = await response.json();
-  return data.embeddings.map((e: any) => e.values);
+  const promises = texts.map(t => getEmbedding(t, apiKey));
+  return Promise.all(promises);
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -197,10 +180,10 @@ System Instructions:
 6. When the user asks about Bhuvanesh's resume, you should summarize his background briefly and let them know they can view or download it by typing '/resume' in the chat, which triggers the secure system download pipeline, or by visiting the '/pdf-viewer' subpage.`;
 
     thinkingSteps.push("Model Engine: Rebuilding dynamic RAG context graph.");
-    thinkingSteps.push("Model Engine: Querying gemini-1.5-flash generation node.");
+    thinkingSteps.push("Model Engine: Querying gemini-2.0-flash generation node.");
 
-    // 4. Query Gemini 1.5 Flash
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+    // 4. Query Gemini 2.0 Flash
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
     
     // Prepare contents payload
     const contents = [
