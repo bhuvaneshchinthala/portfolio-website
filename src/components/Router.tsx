@@ -10,6 +10,7 @@ import IntroLoader from '@/components/ui/IntroLoader';
 const StabondarPage = lazy(() => import('@/components/pages/StabondarPage'));
 const CbumPage = lazy(() => import('@/components/pages/CbumPage'));
 const SystemPortfolioPage = lazy(() => import('@/components/pages/SystemPortfolioPage'));
+const ChatPage = lazy(() => import('@/components/pages/ChatPage'));
 
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       {
         path: "system",
         element: <Suspense fallback={<div className="h-screen w-full bg-[#050505]" />}><SystemPortfolioPage /></Suspense>,
+      },
+      {
+        path: "chat",
+        element: <Suspense fallback={<div className="h-screen w-full bg-deep-black" />}><ChatPage /></Suspense>,
       },
       {
         path: "*",
