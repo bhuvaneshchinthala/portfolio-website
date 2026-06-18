@@ -11,6 +11,7 @@ const StabondarPage = lazy(() => import('@/components/pages/StabondarPage'));
 const CbumPage = lazy(() => import('@/components/pages/CbumPage'));
 const SystemPortfolioPage = lazy(() => import('@/components/pages/SystemPortfolioPage'));
 const ChatPage = lazy(() => import('@/components/pages/ChatPage'));
+import ChatBot from '@/components/ui/ChatBot';
 
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -43,6 +44,7 @@ function Layout() {
       <div key={location.pathname} className="w-full h-full relative">
         <Outlet />
       </div>
+      <ChatBot />
     </>
   );
 }
