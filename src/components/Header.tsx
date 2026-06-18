@@ -72,10 +72,10 @@ export default function Header() {
 
   return (
     <motion.header
-      initial={{ y: -100 }}
+      initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="fixed top-6 left-0 right-0 z-[90] flex justify-center px-4"
+      className="fixed bottom-6 left-0 right-0 z-[90] flex justify-center px-4"
     >
       <motion.nav 
         onMouseEnter={() => setIsNavbarHovered(true)}
