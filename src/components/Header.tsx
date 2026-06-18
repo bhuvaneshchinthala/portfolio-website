@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTransitionStore } from '@/lib/store';
+import { Home, Briefcase, Dumbbell, Folder, Command, Mail, MessageSquare } from 'lucide-react';
 
 // Micro-scramble component for futuristic text transitions on hover
 function ScrambleText({ text, active }: { text: string; active: boolean }) {
@@ -60,12 +61,13 @@ export default function Header() {
   };
 
   const navItems = [
-    { label: 'Home', type: 'scroll', target: 'hero' },
-    { label: 'About Me', type: 'link', to: '/about-me' },
-    { label: 'CBUM', type: 'link', to: '/cbum' },
-    { label: 'Projects', type: 'scroll', target: 'projects' },
-    { label: 'Terminal', type: 'scroll', target: 'terminal' },
-    { label: 'Contact', type: 'scroll', target: 'contact' },
+    { label: 'Home', type: 'scroll', target: 'hero', icon: Home },
+    { label: 'About Me', type: 'link', to: '/about-me', icon: Briefcase },
+    { label: 'CBUM', type: 'link', to: '/cbum', icon: Dumbbell },
+    { label: 'Projects', type: 'scroll', target: 'projects', icon: Folder },
+    { label: 'Terminal', type: 'scroll', target: 'terminal', icon: Command },
+    { label: 'Contact', type: 'scroll', target: 'contact', icon: Mail },
+    { label: "Let's Talk", type: 'scroll', target: 'contact', icon: MessageSquare },
   ];
 
   return (
@@ -82,96 +84,72 @@ export default function Header() {
           setHoveredIndex(null);
         }}
         animate={{
-          scale: isNavbarHovered ? 1.05 : 0.75,
-          backgroundColor: 'rgb(10, 10, 10)', // Guaranteed solid background (no alpha)
-          borderColor: isNavbarHovered ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.08)',
+          scale: isNavbarHovered ? 1.05 : 0.95,
+          backgroundColor: 'rgba(10, 10, 10, 0.85)', // Glassmorphic solid background
+          borderColor: isNavbarHovered ? 'rgba(239, 68, 68, 0.3)' : 'rgba(239, 68, 68, 0.1)',
           boxShadow: isNavbarHovered 
-            ? '0 20px 40px -15px rgba(239,68,68,0.3)' 
-            : '0 4px 12px -5px rgba(0,0,0,0.3)'
+            ? '0 20px 40px -15px rgba(239, 68, 68, 0.25)' 
+            : '0 4px 12px -5px rgba(0, 0, 0, 0.3)'
         }}
         transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-        className={`backdrop-blur-xl border border-white/10 rounded-2xl px-6 flex items-center gap-8 shadow-lg transition-[padding] duration-500 ${
-          scrolled 
-            ? 'py-2' 
-            : 'py-3'
+        className={`backdrop-blur-xl border rounded-2xl px-4 py-2 flex items-center gap-3 shadow-lg transition-[padding] duration-500 ${
+          scrolled ? 'py-1.5' : 'py-2'
         }`}
       >
-
-        <ul 
-          className="relative flex items-center gap-2 font-syne text-[11px] font-bold uppercase tracking-[0.15em] text-gray-200 hidden md:flex"
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
+        <ul className="flex items-center gap-3">
           {navItems.map((item, index) => {
             const isHovered = hoveredIndex === index;
+            const Icon = item.icon;
+
             return (
               <motion.li 
                 key={item.label}
-                className="relative py-1 flex flex-col items-center"
+                className="relative"
                 onMouseEnter={() => setHoveredIndex(index)}
-                animate={{
-                  scale: hoveredIndex === null ? 0.85 : (isHovered ? 1.25 : 0.75),
-                  opacity: hoveredIndex === null ? 0.65 : (isHovered ? 1 : 0.3),
-                }}
-                transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
-                {/* Advanced Sliding Hover Indicator Pill */}
-                {isHovered && (
-                  <motion.div
-                    layoutId="navbar-hover-pill"
-                    className="absolute inset-0 bg-red-500/10 border border-red-500/25 rounded-lg z-0 shadow-[0_0_15px_rgba(239,68,68,0.15)]"
-                    transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-                  />
-                )}
-
-                {/* Sliding Cyber Dot Indicator at Bottom */}
-                {isHovered && (
-                  <motion.div
-                    layoutId="navbar-hover-dot"
-                    className="absolute bottom-[-4px] w-1.5 h-1.5 bg-red-500 rounded-full shadow-[0_0_8px_#ff2800] z-20"
-                    transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-                  />
-                )}
-                
-                {item.type === 'scroll' ? (
-                  <motion.button
-                    transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                    style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
-                    className="relative z-10 px-4 py-1.5 rounded-lg text-gray-300 hover:text-red-400 transition-all duration-200 bg-transparent border-0 outline-none cursor-pointer font-syne font-bold uppercase tracking-[0.15em] text-[11px] flex items-center justify-center"
-                    onClick={() => scrollToSection(item.target!)}
-                  >
-                    <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
-                  </motion.button>
-                ) : (
-                  <div className="flex items-center justify-center z-10">
-                    <Link
-                      to={item.to!}
-                      style={isHovered ? { textShadow: '0 0 8px rgba(239,68,68,0.8)' } : {}}
-                      className="relative block px-4 py-1.5 rounded-lg text-gray-300 hover:text-red-400 transition-all duration-200 font-syne font-bold uppercase tracking-[0.15em] text-[11px]"
+                {/* Floating Tooltip Above */}
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, x: '-50%' }}
+                      animate={{ opacity: 1, y: 0, x: '-50%' }}
+                      exit={{ opacity: 0, y: 10, x: '-50%' }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                      className="absolute -top-12 left-1/2 bg-neutral-950 border border-red-500/30 text-white font-orbitron font-bold text-[9px] uppercase tracking-widest px-2.5 py-1 rounded shadow-[0_0_10px_rgba(239,68,68,0.2)] whitespace-nowrap pointer-events-none z-[100]"
                     >
                       <ScrambleText text={item.label.toUpperCase()} active={isHovered} />
-                    </Link>
-                  </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {item.type === 'scroll' ? (
+                  <button
+                    onClick={() => scrollToSection(item.target!)}
+                    className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all duration-300 cursor-pointer outline-none ${
+                      isHovered 
+                        ? 'bg-neutral-800/80 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.25)] text-red-400' 
+                        : 'bg-neutral-900/40 border-white/5 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Icon size={18} />
+                  </button>
+                ) : (
+                  <Link
+                    to={item.to!}
+                    className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all duration-300 outline-none ${
+                      isHovered 
+                        ? 'bg-neutral-800/80 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.25)] text-red-400' 
+                        : 'bg-neutral-900/40 border-white/5 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Icon size={18} />
+                  </Link>
                 )}
               </motion.li>
             );
           })}
         </ul>
-
-
-        <div className="flex items-center gap-4 pl-4 border-l border-white/10" onMouseLeave={() => setHoveredIndex(null)}>
-          <motion.button
-            onMouseEnter={() => setHoveredIndex(navItems.length)}
-            animate={{
-              scale: hoveredIndex === null ? 0.85 : (hoveredIndex === navItems.length ? 1.25 : 0.75),
-              opacity: hoveredIndex === null ? 0.8 : (hoveredIndex === navItems.length ? 1 : 0.3),
-            }}
-            transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-            onClick={() => scrollToSection('contact')}
-            className="px-5 py-2 rounded-lg bg-red-600 text-white text-[11px] font-bold uppercase tracking-[0.12em] hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 font-syne cursor-pointer"
-          >
-            Let's Talk →
-          </motion.button>
-        </div>
       </motion.nav>
     </motion.header>
   );
