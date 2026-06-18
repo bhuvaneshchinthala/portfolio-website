@@ -180,10 +180,10 @@ System Instructions:
 6. When the user asks about Bhuvanesh's resume, you should summarize his background briefly and let them know they can view or download it by typing '/resume' in the chat, which triggers the secure system download pipeline, or by visiting the '/pdf-viewer' subpage.`;
 
     thinkingSteps.push("Model Engine: Rebuilding dynamic RAG context graph.");
-    thinkingSteps.push("Model Engine: Querying gemini-2.0-flash generation node.");
+    thinkingSteps.push("Model Engine: Querying gemini-2.5-flash generation node.");
 
-    // 4. Query Gemini 2.0 Flash
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+    // 4. Query Gemini 2.5 Flash
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
     
     // Prepare contents payload
     const contents = [
