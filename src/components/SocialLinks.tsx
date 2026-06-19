@@ -33,7 +33,7 @@ export default function SocialLinks() {
                 <img 
                     src="/images/thor.png" 
                     alt="Thor Background" 
-                    className="w-full h-full object-cover object-center opacity-30" 
+                    className="w-full h-full object-cover object-top opacity-30" 
                 />
                 {/* Dark vignette overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]" />
