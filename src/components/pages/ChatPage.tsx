@@ -917,11 +917,11 @@ export default function ChatPage() {
 
       {/* Background Image (Batman) with radial mask blend and vertical rotation */}
       <div 
-        className="fixed pointer-events-none z-0 bg-cover bg-center opacity-[0.12]" 
+        className="fixed pointer-events-none z-0 bg-contain bg-center bg-no-repeat opacity-[0.12]" 
         style={{ 
           backgroundImage: 'url("/batman-bg.png")',
-          width: '150vmax',
-          height: '150vmax',
+          width: '100vh',
+          height: '100vw',
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%) rotate(-90deg)',
