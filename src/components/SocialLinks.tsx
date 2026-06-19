@@ -29,12 +29,11 @@ export default function SocialLinks() {
     return (
         <section className="py-20 relative z-20 flex flex-col items-center justify-center overflow-hidden">
             {/* Background Thor Image */}
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
                 <img 
                     src="/images/thor.png" 
                     alt="Thor Background" 
-                    className="opacity-30 h-[100vw] w-auto max-w-none object-contain" 
-                    style={{ transform: 'rotate(-90deg) translateX(-22vw)' }}
+                    className="w-full h-full object-cover object-center opacity-30" 
                 />
                 {/* Dark vignette overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]" />
