@@ -915,6 +915,16 @@ export default function ChatPage() {
       {/* Background Starfield */}
       <ParticleBackground accent={accent} />
 
+      {/* Background Image (Batman) with radial mask blend */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center opacity-[0.12]" 
+        style={{ 
+          backgroundImage: 'url("/batman-bg.png")',
+          maskImage: 'radial-gradient(circle, black 35%, transparent 85%)',
+          WebkitMaskImage: 'radial-gradient(circle, black 35%, transparent 85%)'
+        }}
+      />
+
       {/* Cyber Grid background scanlines */}
       <div className="fixed inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.003)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,0.003)_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none z-[1] opacity-40" />
 
