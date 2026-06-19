@@ -34,7 +34,7 @@ export default function SocialLinks() {
                     src="/images/thor.png" 
                     alt="Thor Background" 
                     className="opacity-30 h-[100vw] w-auto max-w-none object-contain" 
-                    style={{ transform: 'rotate(-90deg)' }}
+                    style={{ transform: 'rotate(-90deg) translateX(-22vw)' }}
                 />
                 {/* Dark vignette overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]" />
