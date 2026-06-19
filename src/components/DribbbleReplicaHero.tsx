@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { motion, useScroll, useTransform, useSpring, type MotionValue, AnimatePresence, useMotionValue, useAnimationFrame, useMotionTemplate } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 import VideoScrollCanvas from '@/components/VideoScrollCanvas';
 
 /* ═══════════════════════════════════════════════════════════
@@ -372,6 +373,60 @@ export default function DribbbleReplicaHero() {
 
     const [activePhase, setActivePhase] = useState(0);
     const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+    const [chatQuery, setChatQuery] = useState('');
+    const [placeholderText, setPlaceholderText] = useState('');
+
+    useEffect(() => {
+        const phrases = [
+            "Link the resume...",
+            "Link the projects...",
+            "Link the experience...",
+            "Who is Bhuvanesh?",
+            "What are his AI skills?"
+        ];
+        let currentPhraseIdx = 0;
+        let currentCharIdx = 0;
+        let isDeleting = false;
+        let timer: ReturnType<typeof setTimeout>;
+
+        const tick = () => {
+            const fullPhrase = phrases[currentPhraseIdx];
+            if (!isDeleting) {
+                setPlaceholderText(fullPhrase.slice(0, currentCharIdx + 1));
+                currentCharIdx++;
+                if (currentCharIdx === fullPhrase.length) {
+                    isDeleting = true;
+                    timer = setTimeout(tick, 1800); // Wait before backspacing
+                } else {
+                    timer = setTimeout(tick, 80); // Typing speed
+                }
+            } else {
+                setPlaceholderText(fullPhrase.slice(0, currentCharIdx - 1));
+                currentCharIdx--;
+                if (currentCharIdx === 0) {
+                    isDeleting = false;
+                    currentPhraseIdx = (currentPhraseIdx + 1) % phrases.length;
+                    timer = setTimeout(tick, 300); // Pause before next
+                } else {
+                    timer = setTimeout(tick, 45); // Deleting speed
+                }
+            }
+        };
+
+        timer = setTimeout(tick, 500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const handleChatSubmit = (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (!chatQuery.trim()) return;
+        
+        // Dispatch the custom event to open the chatbot overlay with the query
+        const event = new CustomEvent('open-chatbot', { detail: { query: chatQuery.trim() } });
+        window.dispatchEvent(event);
+        
+        setChatQuery('');
+    };
 
     const handleMouseMove = useCallback((e: MouseEvent) => {
         const el = stickyRef.current;
@@ -544,29 +599,7 @@ export default function DribbbleReplicaHero() {
                                 {PHASES[activePhase].desc}
                             </p>
 
-                            {/* CTA Buttons */}
-                            <div className="flex items-center gap-6 mt-10">
-                                <button
-                                    onClick={() => {
-                                        const el = document.getElementById('terminal') || document.getElementById('core-values') || document.querySelector('section:nth-of-type(3)');
-                                        el?.scrollIntoView({ behavior: 'smooth' });
-                                    }}
-                                    className="group flex items-center gap-3 text-white px-7 py-3.5 rounded-sm font-bold uppercase tracking-[0.2em] text-[11px] hover:opacity-80 transition-all duration-300 shadow-[0_0_30px_rgba(255,40,0,0.3)] cursor-pointer"
-                                    style={{ background: '#ff2800' }}
-                                >
-                                    Explore Models
-                                    <span className="text-white/80 group-hover:translate-x-1 transition-transform">→</span>
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        const el = document.getElementById('about') || document.querySelector('[id="about"]') || document.querySelector('section:nth-of-type(2)');
-                                        el?.scrollIntoView({ behavior: 'smooth' });
-                                    }}
-                                    className="flex items-center gap-3 text-white/50 hover:text-white px-5 py-3.5 font-medium uppercase tracking-[0.2em] text-[11px] transition-all duration-300 border border-white/10 hover:border-white/30 rounded-sm cursor-pointer"
-                                >
-                                    Our Story
-                                </button>
-                            </div>
+
 
                             {/* Stats Row */}
                             <div className="flex gap-10 md:gap-16 mt-12 md:mt-16">
@@ -678,6 +711,53 @@ export default function DribbbleReplicaHero() {
                     </motion.div>
                 </AnimatePresence>
 
+                {/* Centered persistent Chat Input Bar (positioned directly above the BHUVI title) */}
+                <motion.div 
+                    className="absolute bottom-[30%] left-1/2 -translate-x-1/2 w-[calc(100%-32px)] sm:w-full max-w-md md:max-w-lg z-[20] pointer-events-auto"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.8 }}
+                >
+                    <form 
+                        onSubmit={handleChatSubmit}
+                        className="relative flex items-center w-full h-14 bg-[#050505]/60 backdrop-blur-md border border-white/10 hover:border-white/20 focus-within:border-white/30 rounded-md overflow-hidden transition-colors"
+                    >
+                        {/* Left Orange 'V' icon */}
+                        <div className="pl-5 pr-3 flex items-center justify-center pointer-events-none">
+                            <span className="text-[#ff4422] font-black font-mono text-sm tracking-tighter">V</span>
+                        </div>
+                        
+                        {/* Input Field */}
+                        <input 
+                            type="text" 
+                            value={chatQuery}
+                            onChange={(e) => setChatQuery(e.target.value)}
+                            placeholder={placeholderText}
+                            className="flex-1 bg-transparent text-white/90 text-sm font-mono placeholder:text-white/30 outline-none h-full"
+                            autoComplete="off"
+                            spellCheck="false"
+                        />
+
+                        {/* Blinking block cursor effect on empty input */}
+                        {!chatQuery && (
+                            <div 
+                                className="absolute top-1/2 -translate-y-1/2 w-2 h-4 bg-[#ff4422] animate-pulse opacity-70 pointer-events-none"
+                                style={{
+                                    left: `calc(44px + ${placeholderText.length}ch)`
+                                }}
+                            />
+                        )}
+
+                        {/* Right Submit Button */}
+                        <button 
+                            type="submit"
+                            className="h-full px-5 text-white/40 hover:text-white transition-colors border-l border-white/5 flex items-center justify-center cursor-pointer"
+                        >
+                            <ArrowUpRight size={16} strokeWidth={2} />
+                        </button>
+                    </form>
+                </motion.div>
+
                 {/* Bottom gradient for readability */}
                 <div className="absolute bottom-0 left-0 right-0 h-[30vh] bg-gradient-to-t from-[#050505] to-transparent z-[8] pointer-events-none" />
 
@@ -689,9 +769,9 @@ export default function DribbbleReplicaHero() {
                     <path d="M 25 40 L 40 40 L 40 25" fill="none" stroke="#ffffff" strokeWidth="1.5" />
                 </svg>
 
-                {/* Scroll down indicator */}
+                {/* Scroll down indicator (positioned below input bar / above dock) */}
                 <motion.div
-                    className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[10] flex flex-col items-center gap-2"
+                    className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[10] flex flex-col items-center gap-2"
                     animate={{ opacity: [1, 0.3, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                 >

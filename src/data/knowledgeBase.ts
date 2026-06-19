@@ -135,11 +135,12 @@ You can download or view Bhuvanesh's resume by typing '/resume' in the chat, or 
     category: 'contact',
     title: 'Contact Information and Channels',
     content: `You can reach out to Bhuvanesh Chinthala through the following channels:
-- Secure Email Gateway: hello@bhuvanesh.dev
-- GitHub Profile: https://github.com/chinthalasathwik
-- LinkedIn: Bhuvanesh Chinthala
+- Email: bhuvaneshchinthala0@gmail.com
+- GitHub Profile: https://github.com/bhuvaneshchinthala
+- LinkedIn: https://www.linkedin.com/in/bhuvanesh-chinthala
+- Instagram: https://instagram.com/bhuvxnesh_26
 - Contact Form: Submit a message using the interactive form located in the footer section at the bottom of the Home Page.`,
-    tags: ['contact', 'email', 'github', 'linkedin', 'message', 'socials']
+    tags: ['contact', 'email', 'github', 'linkedin', 'instagram', 'message', 'socials']
   },
   {
     id: 'site_features',

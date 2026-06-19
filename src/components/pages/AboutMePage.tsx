@@ -82,7 +82,7 @@ function EmailChar({ char, index }: { char: string; index: number }) {
 function AnimatedEmail() {
     return (
         <a
-            href="mailto:hello@bhuvanesh.dev"
+            href="mailto:bhuvaneshchinthala0@gmail.com"
             className="relative z-10 flex flex-wrap justify-center font-black font-sans pb-3 cursor-pointer"
             style={{ fontSize: 'clamp(1.4rem, 4vw, 3.5rem)', letterSpacing: '-0.01em' }}
         >

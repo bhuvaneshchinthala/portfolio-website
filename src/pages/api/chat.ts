@@ -160,7 +160,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // 3. Assemble RAG Prompt
-    const dynamicSystemPrompt = `You are ARES, the advanced cognitive AI representative for Bhuvanesh Chinthala.
+    const dynamicSystemPrompt = `You are Bhuvanesh's AI Representative.
 Your tone is highly professional, technical, precise, and analytical. You are representing Bhuvanesh, an elite AI & Computer Vision Research Engineer.
 
 Bhuvanesh's Portfolio Information Context:
@@ -176,7 +176,7 @@ System Instructions:
    - If the answer to the user's query cannot be found, verified, or reasonably derived directly from the Portfolio Information Context provided above, you MUST respond EXACTLY with:
      "I couldn't find that information in Bhuvanesh's portfolio."
    - Do not make up facts. Never invent details about Bhuvanesh's background, education, experience, projects, or links.
-5. If the user greets you (e.g. "Hi", "Hello", "How are you", "Who are you", "What can you do"), greet them professionally, identify yourself as ARES, explain that you are Bhuvanesh's AI representative, and mention that you can audit and answer queries about Bhuvanesh's projects, skills, education, experience, resume, or contact details. Keep it brief.
+5. If the user greets you (e.g. "Hi", "Hello", "How are you", "Who are you", "What can you do"), greet them professionally, identify yourself as Bhuvanesh's AI Representative, and mention that you can audit and answer queries about Bhuvanesh's projects, skills, education, experience, resume, or contact details. Keep it brief.
 6. When the user asks about Bhuvanesh's resume, you should summarize his background briefly and let them know they can view or download it by typing '/resume' in the chat, which triggers the secure system download pipeline, or by visiting the '/pdf-viewer' subpage.`;
 
     thinkingSteps.push("Model Engine: Rebuilding dynamic RAG context graph.");
@@ -185,7 +185,9 @@ System Instructions:
     // 4. Query Gemini 2.5 Flash
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
     
-    // Prepare contents payload
+    // Cap conversation history to last 20 turns to prevent token overflow
+    const cappedMessages = messages.slice(-20);
+
     const contents = [
       {
         role: 'user',
@@ -193,25 +195,40 @@ System Instructions:
       },
       {
         role: 'model',
-        parts: [{ text: "Understood. I am ARES, Bhuvanesh's AI Representative. I will answer queries professionally and strictly use Bhuvanesh's portfolio context. If information is not in the context, I will reply with: \"I couldn't find that information in Bhuvanesh's portfolio.\"" }]
+        parts: [{ text: "Understood. I am Bhuvanesh's AI Representative. I will answer queries professionally and strictly use Bhuvanesh's portfolio context. If information is not in the context, I will reply with: \"I couldn't find that information in Bhuvanesh's portfolio.\"" }]
       },
-      ...messages.map((m: any) => ({
+      ...cappedMessages.map((m: any) => ({
         role: m.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: m.content }]
       }))
     ];
 
-    const response = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents }),
-    });
+    // Retry logic with exponential backoff for transient failures
+    let response: Response | null = null;
+    let lastError = '';
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        response = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents }),
+        });
+        if (response.ok) break;
+        lastError = await response.text();
+        // Don't retry on 4xx client errors (bad request, auth, etc.)
+        if (response.status >= 400 && response.status < 500) break;
+      } catch (fetchErr: any) {
+        lastError = fetchErr.message || 'Network error';
+      }
+      // Wait before retry: 500ms, 1500ms
+      if (attempt < 2) await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
+    }
 
-    if (!response.ok) {
-      const errText = await response.text();
+    if (!response || !response.ok) {
+      const errText = lastError || 'Unknown error after retries';
       return new Response(
         JSON.stringify({
-          error: `Gemini API error: ${response.statusText}`,
+          error: `Gemini API error: ${response?.statusText || 'Network failure'}`,
           details: errText,
           fallback: true,
         }),
